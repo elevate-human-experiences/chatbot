@@ -42,7 +42,3 @@ shell-frontend: ## Open shell in frontend container
 health: ## Check health of all services
 	@echo "Checking service health..."
 	@curl -s http://localhost:8080/health | python3 -m json.tool || echo "Backend health check failed"
-
-setup: ## Initial setup - copy env template and build
-	@if [ ! -f .env ]; then cp .env.template .env; echo "Created .env file from template"; fi
-	$(MAKE) build
