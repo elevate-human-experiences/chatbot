@@ -1,0 +1,21 @@
+#!/bin/bash
+set -e
+
+if [ "$#" -eq 0 ] ;
+then
+  echo "Entrypoint did not receive a command."
+  echo "Should be one of 'dev' or 'serve'"
+  exit 1
+fi
+
+echo "Entrypoint received command: $@"
+if [ "$1" = "serve" ]
+then
+  exec nginx -c "/home/user/app/nginx.conf" -g "daemon off;"
+elif [ "$1" = "dev" ]
+then
+  exec npm run dev -- --host 0.0.0.0
+else
+  echo "Entrypoint received invalid command."
+  exit 1
+fi

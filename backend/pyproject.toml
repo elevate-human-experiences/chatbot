@@ -1,0 +1,81 @@
+[project]
+name = "backend"
+version = "0.5"
+description = "Backend service with Claude Anthropic reasoning models and tool calling support"
+requires-python = ">=3.12"
+authors = [
+    {name = "Rahul Parundekar", email= "rahul@elevate.do" },
+]
+readme = "README.md"
+keywords = ["chatbot", "reasoning", "tool-calling", "claude", "anthropic", "falcon", "litellm"]
+classifiers = [
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "bcrypt",
+    "certifi",
+    "falcon",
+    "httpx",
+    "litellm",
+    "motor>=3.7.0",
+    "pydantic>=2.0.0",
+    "pyjwt",
+    "python-dateutil",
+    "python-dotenv",
+    "pytest",
+    "pylint",
+    "redis>=4.2.0",
+    "aiobotocore",
+    "aiosendgrid",
+    "uvicorn[standard]",
+    "validators",
+    "types-aiofiles>=24.1.0.20250326",
+    "aiofiles>=24.1.0",
+    "sendgrid>=6.12.2",
+    "aioboto3>=14.3.0",
+]
+
+[tool.setuptools.packages.find]
+include = ["src*"]
+exclude = ["dead*"]
+
+[project.optional-dependencies]
+dev = [
+  "pre-commit>=2.17.0",        # hook orchestrator
+  "ruff>=0.0.79",              # fast linting & auto-fix
+  "pytest>=6.2.5",             # testing framework
+  "pytest-asyncio>=0.20.0",    # async test support
+  "mypy>=0.910",               # static type checking
+]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+addopts = "-vvv"
+testpaths = "tests"
+
+[tool.ruff]
+exclude = [
+    ".venv",
+    ".git",
+    "__pycache__",
+    "build",
+    "dist",
+    "venv",
+]
+line-length = 120
+src = ["src"]
+
+[mypy]
+files = ["src"]
+strict_optional = false
+warn_unused_ignores = false

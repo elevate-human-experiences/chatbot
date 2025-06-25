@@ -1,0 +1,188 @@
+default_language_version:
+  python: python3.12
+
+# ignore everything under top-level `dead/`
+exclude: ^dead/
+
+repos:
+  # 1. Simple repo-level checks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0  # latest release :contentReference[oaicite:0]{index=0}
+    hooks:
+      - id: check-ast
+        files: ^backend/.*\.py$
+      - id: check-added-large-files
+        args: [--maxkb=500]
+      - id: check-merge-conflict
+      - id: check-byte-order-marker
+      - id: check-case-conflict
+      - id: check-docstring-first
+        files: ^backend/.*\.py$
+      - id: check-executables-have-shebangs
+      - id: check-shebang-scripts-are-executable
+      - id: debug-statements
+        files: ^backend/.*\.py$
+      - id: detect-private-key
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: mixed-line-ending
+      - id: requirements-txt-fixer
+        files: ^backend/.*requirements.*\.txt$
+      - id: no-commit-to-branch
+      - id: check-json
+      - id: check-yaml
+        args: [--allow-multiple-documents]
+      - id: pretty-format-json
+        exclude: ^frontend/(package\.json|tsconfig.*\.json|components\.json|\.prettierrc\.json)$
+
+  # 2. YAML formatting
+  - repo: https://github.com/jumanjihouse/pre-commit-hook-yamlfmt
+    rev: 0.2.3  # latest tag :contentReference[oaicite:1]{index=1}
+    hooks:
+      - id: yamlfmt
+        args:
+          - --mapping=2
+          - --sequence=4
+          - --offset=2
+          - --implicit_start
+          - --preserve-quotes
+
+  # 3. Markdown linting
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.44.0  # latest release :contentReference[oaicite:2]{index=2}
+    hooks:
+      - id: markdownlint
+        args:
+          - --fix
+          - --disable=MD013
+
+  # 4. Shell script formatting
+  - repo: https://github.com/pecigonzalo/pre-commit-shfmt
+    rev: v2.2.0  # latest release :contentReference[oaicite:3]{index=3}
+    hooks:
+      - id: shell-fmt-docker
+        args:
+          - --indent=2
+          - --binary-next-line
+          - --case-indent
+          - --space-redirects
+
+  # 5. Python linting & quality
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.9.9  # latest release :contentReference[oaicite:4]{index=4}
+    hooks:
+      - id: ruff
+        args: [--fix]
+        files: ^backend/.*\.py$
+      - id: ruff-format
+        files: ^backend/.*\.py$
+
+  # - repo: https://github.com/pycqa/flake8
+  #   rev: 7.2.0  # latest tag :contentReference[oaicite:5]{index=5}
+  #   hooks:
+  #     - id: flake8
+  #       files: ^backend/.*\.py$
+  #       additional_dependencies:
+  #         - flake8-cognitive-complexity
+  #         - flake8-cohesion
+  #         - flake8-expression-complexity
+  #       args:
+  #         - --max-cognitive-complexity=50
+  #         - --max-expression-complexity=10
+  #         - --select=CCR001,ECE001
+
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    rev: 0.7.3  # latest release :contentReference[oaicite:6]{index=6}
+    hooks:
+      - id: uv-lock
+        name: uv-lock-backend
+        language: system
+        entry: bash -c 'cd backend && uv lock'
+        pass_filenames: false
+        files: ^backend/pyproject\.toml$
+
+  - repo: https://github.com/econchick/interrogate
+    rev: 1.7.0  # latest release :contentReference[oaicite:7]{index=7}
+    hooks:
+      - id: interrogate
+        files: ^backend/.*\.py$
+        args:
+          - --fail-under=80
+          - --verbose
+
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.4.1  # latest release :contentReference[oaicite:8]{index=8}
+    hooks:
+      - id: codespell
+        args:
+          - --ignore-words-list=astroid
+
+  # existing ones you already had:
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.15.0  # latest mirror :contentReference[oaicite:9]{index=9}
+    hooks:
+      - id: mypy
+        files: ^backend/.*\.py$
+        args: [--ignore-missing-imports, --explicit-package-bases, --check-untyped-defs]
+        additional_dependencies:
+          - "pydantic>=1.10.4"
+          - "types-requests"
+
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v3.19.1  # latest tag :contentReference[oaicite:10]{index=10}
+    hooks:
+      - id: pyupgrade
+        files: ^backend/.*\.py$
+        args: [--py36-plus]
+
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.5.0  # latest release :contentReference[oaicite:11]{index=11}
+    hooks:
+      - id: detect-secrets
+        name: "detect-secrets"
+        args: ["--exclude-files", '.*\.ipynb$']
+      - id: detect-secrets
+        name: "detect-secrets-jupyter"
+        args: ["--exclude-files", ".*[^i][^p][^y][^n][^b]$", "--exclude-lines", '"(hash|id|authorship_tag|image/\w+)":.*']
+
+  - repo: https://github.com/Lucas-C/pre-commit-hooks
+    rev: v1.5.5  # latest release :contentReference[oaicite:12]{index=12}
+    hooks:
+      - id: insert-license
+        files: ^backend/.*\.py$
+        args:
+          - --license-filepath
+          - LICENSE
+
+  # 6. Frontend (TypeScript/React) checks
+  - repo: local
+    hooks:
+      - id: eslint-frontend
+        name: ESLint (Frontend)
+        entry: bash -c 'cd frontend && npm run lint:fix'
+        language: system
+        files: ^frontend/.*\.(ts|tsx|js|jsx)$
+        pass_filenames: false
+
+      - id: prettier-frontend
+        name: Prettier (Frontend)
+        entry: bash -c 'cd frontend && npm run format'
+        language: system
+        files: ^frontend/.*\.(ts|tsx|js|jsx|json|css|md)$
+        pass_filenames: false
+
+  - repo: local
+    hooks:
+      - id: typescript-check
+        name: TypeScript Check
+        entry: bash -c 'cd frontend && npm run type-check'
+        language: system
+        files: ^frontend/.*\.(ts|tsx)$
+        pass_filenames: false
+
+  # 7. Commit message convention
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    rev: v4.2.0  # latest release :contentReference[oaicite:13]{index=13}
+    hooks:
+      - id: conventional-pre-commit
+        stages: [commit-msg]
