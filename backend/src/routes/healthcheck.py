@@ -1,6 +1,6 @@
 # MIT License
 #
-# Copyright (c) 2025 elevate-human-experiences
+# Copyright (c) 2025 Elevate Human Experiences, LLC
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,8 @@
 
 from datetime import datetime, timezone
 import logging
-from src.helpers.schema import HealthCheckResponse
+from helpers.schemas import HealthCheckResponse
+from helpers.db import DatabaseHelper
 
 logger = logging.getLogger(__name__)
 
@@ -33,8 +34,32 @@ class HealthCheckResource:
     """Health check route handler."""
 
     async def on_get(self, req, resp) -> None:
-        """Return service health status."""
-        health_data = HealthCheckResponse(
-            status="healthy", timestamp=datetime.now(tz=timezone.utc), service="chatbot-backend", version="0.4"
-        )
-        resp.media = health_data.model_dump()
+        """Return service health status including database connectivity."""
+        try:
+            # Check database connectivity
+            db_health = await DatabaseHelper.health_check()
+
+            # Determine overall health status
+            all_healthy = all(db_health.values())
+            status = "healthy" if all_healthy else "unhealthy"
+
+            health_data = HealthCheckResponse(
+                status=status, timestamp=datetime.now(tz=timezone.utc), service="chatbot-backend", version="0.5"
+            )
+
+            # Add database health details
+            response_data = health_data.model_dump()
+            response_data["databases"] = db_health
+
+            resp.media = response_data
+
+        except Exception as e:
+            logger.error("Health check failed: %s", e)
+            resp.status = 503  # Service Unavailable
+            resp.media = {
+                "status": "unhealthy",
+                "timestamp": datetime.now(tz=timezone.utc).isoformat(),
+                "service": "chatbot-backend",
+                "version": "0.5",
+                "error": str(e),
+            }

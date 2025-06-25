@@ -1,6 +1,6 @@
 # MIT License
 #
-# Copyright (c) 2025 elevate-human-experiences
+# Copyright (c) 2025 Elevate Human Experiences, LLC
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,7 @@ from typing import Optional
 
 def setup_logging(level: Optional[str] = None) -> None:
     """Set up logging configuration."""
-    log_level = level or os.getenv("LOG_LEVEL") or "INFO"
+    log_level = level or os.getenv("LOG_LEVEL") or "DEBUG"  # Changed to DEBUG for thinking content debugging
 
     # Configure logging format
     logging.basicConfig(
@@ -41,7 +41,7 @@ def setup_logging(level: Optional[str] = None) -> None:
     # Set third-party library log levels
     logging.getLogger("uvicorn").setLevel(logging.INFO)
     logging.getLogger("httpx").setLevel(logging.WARNING)
-    logging.getLogger("litellm").setLevel(logging.WARNING)
+    logging.getLogger("litellm").setLevel(logging.DEBUG)  # Enable debug for thinking content debugging
 
     logger = logging.getLogger(__name__)
     logger.info("Logging configured at level: %s", log_level)

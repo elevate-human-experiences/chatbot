@@ -130,13 +130,15 @@ You're joining as a core member of our full-stack engineering team.
 
    ```text
    frontend/
-     src/
-       components/
-         ui/           # shadcn/ui components
-       lib/
-         utils.ts      # utility functions (cn, etc.)
-       assets/         # static assets
-       App.tsx         # main app component
+      pages/
+        Home.tsx        # Home page component
+      components/
+        ui/             # shadcn/ui components
+        MyComponent.tsx # Example component used in pages/
+      lib/
+        utils.ts        # utility functions (cn, etc.)
+      assets/           # static assets
+      App.tsx           # main app component with react-router
        main.tsx        # entry point
      public/           # public assets
      components.json   # shadcn/ui configuration
@@ -176,12 +178,15 @@ backend/
 
 frontend/
   src/
+    pages/
+      Home.tsx        # Home page component
     components/
       ui/             # shadcn/ui components
+      MyComponent.tsx # Example component used in pages/
     lib/
       utils.ts        # utility functions (cn, etc.)
     assets/           # static assets
-    App.tsx           # main app component
+    App.tsx           # main app component with react-router
     main.tsx          # entry point
   public/             # public assets
   components.json     # shadcn/ui configuration
@@ -631,3 +636,14 @@ export async function getUsers(): Promise<User[]> {
 * **Observability**: Implement logging, monitoring, and alerting to track application health and performance.
 * **Add Before Delete**: When making changes, add new features or improvements before removing old code to ensure stability.
 * **Documentation**: Keep code well-documented with docstrings, inline comments, and external documentation (e.g., MkDocs).
+
+## Running the Project
+
+You can start and stop the servers using the provided Makefile commands:
+
+```bash
+make run # Starts the backend and frontend servers
+make stop # Stops the servers
+```
+
+Use `make clean` to remove any temporary files or caches.

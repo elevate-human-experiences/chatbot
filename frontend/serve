@@ -1,0 +1,54 @@
+#!/usr/bin/env python
+
+# Copyright (c) 2024 A.I. Hero, Inc.
+# All Rights Reserved.
+#
+# This software and associated documentation files (the "Software") are provided "as is", without warranty
+# of any kind, express or implied, including but not limited to the warranties of merchantability, fitness
+# for a particular purpose, and noninfringement. In no event shall the authors or copyright holders be
+# liable for any claim, damages, or other liability, whether in an action of contract, tort, or otherwise,
+# arising from, out of, or in connection with the Software or the use or other dealings in the Software.
+#
+# Unauthorized copying of this file, via any medium, is strictly prohibited.
+
+"""Start the nginx server."""
+
+import os
+import signal
+import subprocess
+import sys
+
+
+def sigterm_handler(pid: int) -> None:
+    """Kill the nginx process and exit."""
+    try:
+        os.kill(pid, signal.SIGQUIT)
+    except OSError:
+        pass
+    sys.exit(0)
+
+
+def start_server() -> None:
+    """Start the nginx server."""
+    print("Starting nginx server.")
+
+    # link the log streams to stdout/err so they will be logged to the container logs
+    subprocess.check_call(["ln", "-sf", "/dev/stdout", "/var/log/nginx/access.log"])
+    subprocess.check_call(["ln", "-sf", "/dev/stderr", "/var/log/nginx/error.log"])
+
+    nginx = subprocess.Popen(["nginx", "-c", "/home/user/app/nginx.conf"])
+
+    signal.signal(signal.SIGTERM, lambda a, b: sigterm_handler(nginx.pid))
+
+    # Wait for nginx to exit
+    try:
+        _, _ = os.waitpid(nginx.pid, 0)
+    except OSError:
+        pass
+
+    print("Nginx server exiting")
+    sigterm_handler(nginx.pid)
+
+
+if __name__ == "__main__":
+    start_server()

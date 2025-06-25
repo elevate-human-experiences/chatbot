@@ -1,6 +1,6 @@
 # MIT License
 #
-# Copyright (c) 2025 elevate-human-experiences
+# Copyright (c) 2025 Elevate Human Experiences, LLC
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -24,12 +24,19 @@
 
 import falcon
 import falcon.asgi
+import falcon.media
 import logging
 import os
 from dotenv import load_dotenv
-from src.helpers.logger import setup_logging
-from src.routes.healthcheck import HealthCheckResource
-from src.routes.chat import ChatCompletionsResource
+from helpers.logger import setup_logging
+from helpers import json_encoder
+from routes.healthcheck import HealthCheckResource
+from routes.chat import ChatCompletionsResource
+from routes.users import UserResource
+from routes.projects import ProjectResource
+from routes.agent_profiles import AgentProfileResource
+from routes.conversations import ConversationResource, ConversationMessageResource
+from routes.instructions import InstructionResource
 
 # Load environment variables from .env file
 load_dotenv()
@@ -60,10 +67,40 @@ def create_app() -> falcon.asgi.App:
     middleware = [CORSMiddleware()]
     app = falcon.asgi.App(middleware=middleware)
 
+    # Configure custom JSON encoder for media handling
+    json_handler = falcon.media.JSONHandler(dumps=json_encoder.dumps, loads=json_encoder.loads)
+    app.req_options.media_handlers[falcon.MEDIA_JSON] = json_handler
+    app.resp_options.media_handlers[falcon.MEDIA_JSON] = json_handler
+
+    # Health and chat routes
     app.add_route("/health", HealthCheckResource())
     app.add_route("/chat/completions", ChatCompletionsResource())
 
-    logger.info("Falcon app created with CORS middleware and chat routes")
+    # CRUDL routes for core entities
+    # Users
+    app.add_route("/users", UserResource())
+    app.add_route("/users/{user_id}", UserResource())
+
+    # Projects
+    app.add_route("/projects", ProjectResource())
+    app.add_route("/projects/{project_id}", ProjectResource())
+
+    # Agent Profiles (nested under projects)
+    app.add_route("/projects/{project_id}/profiles", AgentProfileResource())
+    app.add_route("/projects/{project_id}/profiles/{profile_id}", AgentProfileResource())
+
+    # Instructions (nested under agent profiles within projects)
+    app.add_route("/projects/{project_id}/profiles/{profile_id}/instructions", InstructionResource())
+    app.add_route(
+        "/projects/{project_id}/profiles/{profile_id}/instructions/{instruction_index:int}", InstructionResource()
+    )
+
+    # Conversations (nested under projects)
+    app.add_route("/projects/{project_id}/conversations", ConversationResource())
+    app.add_route("/projects/{project_id}/conversations/{conversation_id}", ConversationResource())
+    app.add_route("/projects/{project_id}/conversations/{conversation_id}/messages", ConversationMessageResource())
+
+    logger.info("Falcon app created with CORS middleware and all CRUDL routes")
     return app
 
 

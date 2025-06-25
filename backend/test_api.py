@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # MIT License
 #
-# Copyright (c) 2025 elevate-human-experiences
+# Copyright (c) 2025 Elevate Human Experiences, LLC
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -163,9 +163,18 @@ class ChatAPITester:
                                             if delta.get("thinking"):
                                                 print(f"\n🤔 [THINKING]: {delta['thinking']}")
 
-                                            # Display reasoning content
+                                            # Display reasoning content (LiteLLM standard)
+                                            if delta.get("reasoning_content"):
+                                                print(f"\n💭 [REASONING]: {delta['reasoning_content']}")
+
+                                            # Display thinking blocks (Anthropic format)
+                                            if delta.get("thinking_blocks"):
+                                                for block in delta["thinking_blocks"]:
+                                                    print(f"\n🧠 [THINKING BLOCK]: {block.get('thinking', block)}")
+
+                                            # Also check for legacy 'reasoning' field
                                             if delta.get("reasoning"):
-                                                print(f"\n💭 [REASONING]: {delta['reasoning']}")
+                                                print(f"\n💭 [REASONING (legacy)]: {delta['reasoning']}")
 
                                             # Display tool calls
                                             if delta.get("tool_calls"):

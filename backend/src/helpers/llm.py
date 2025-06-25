@@ -1,6 +1,6 @@
 # MIT License
 #
-# Copyright (c) 2025 elevate-human-experiences
+# Copyright (c) 2025 Elevate Human Experiences, LLC
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -30,7 +30,7 @@ from typing import AsyncGenerator, Any
 logger = logging.getLogger(__name__)
 
 # Configure LiteLLM
-litellm.set_verbose = False  # Set to True for debugging
+litellm.set_verbose = True  # Enable for debugging thinking content
 litellm.drop_params = True  # Drop unsupported params instead of erroring
 litellm.max_tokens = 4096  # Default max tokens
 
@@ -112,6 +112,17 @@ class LLMHelper:
 
             async for chunk in response:
                 try:
+                    # Enhanced debugging for all chunks when thinking is enabled
+                    if thinking:
+                        logger.debug("=== Processing chunk ===")
+                        logger.debug("Raw chunk type: %s", type(chunk))
+                        logger.debug(
+                            "Raw chunk attributes: %s", [attr for attr in dir(chunk) if not attr.startswith("_")]
+                        )
+                        if hasattr(chunk, "__dict__"):
+                            chunk_dict = {k: v for k, v in chunk.__dict__.items() if not k.startswith("_")}
+                            logger.debug("Raw chunk dict: %s", str(chunk_dict)[:1000])
+
                     if hasattr(chunk, "choices") and chunk.choices and len(chunk.choices) > 0:
                         choice = chunk.choices[0]
                         delta = choice.delta if hasattr(choice, "delta") else {}
@@ -122,19 +133,203 @@ class LLMHelper:
                         tool_calls = getattr(delta, "tool_calls", None)
                         finish_reason = getattr(choice, "finish_reason", None)
 
-                        # Handle Claude-specific thinking content
+                        # Handle thinking/reasoning content with comprehensive checks
                         thinking_content = None
                         reasoning_content = None
+                        thinking_blocks = None
 
-                        # Check for thinking in delta
-                        if hasattr(delta, "thinking"):
-                            thinking_content = getattr(delta, "thinking", None)
+                        # Debug delta structure when thinking is enabled
+                        if thinking:
+                            logger.debug("=== Delta analysis ===")
+                            logger.debug("Delta type: %s", type(delta))
+                            logger.debug(
+                                "Delta attributes: %s", [attr for attr in dir(delta) if not attr.startswith("_")]
+                            )
+                            if hasattr(delta, "__dict__"):
+                                delta_dict = {k: v for k, v in delta.__dict__.items() if not k.startswith("_")}
+                                logger.debug("Delta dict: %s", delta_dict)
 
-                        # Check for reasoning content in various possible formats
-                        if hasattr(delta, "reasoning"):
-                            reasoning_content = getattr(delta, "reasoning", None)
-                        elif hasattr(chunk, "reasoning"):
-                            reasoning_content = getattr(chunk, "reasoning", None)
+                        # Check for thinking in delta (all possible field names)
+                        thinking_field_names = [
+                            "thinking",
+                            "thinking_content",
+                            "reasoning",
+                            "reasoning_content",
+                            "thoughts",
+                            "thought",
+                            "reason",
+                            "internal_thoughts",
+                            "reflection",
+                            "analysis",
+                            "step_by_step",
+                            "chain_of_thought",
+                            "cot",
+                        ]
+
+                        for thinking_field in thinking_field_names:
+                            if hasattr(delta, thinking_field):
+                                field_value = getattr(delta, thinking_field, None)
+                                if field_value:
+                                    if thinking_field in [
+                                        "thinking",
+                                        "thinking_content",
+                                        "thoughts",
+                                        "thought",
+                                        "internal_thoughts",
+                                    ]:
+                                        thinking_content = field_value
+                                    else:
+                                        reasoning_content = field_value
+                                    logger.info("Found %s in delta: %s", thinking_field, str(field_value)[:100])
+
+                        # Check for thinking_blocks in delta
+                        if hasattr(delta, "thinking_blocks"):
+                            thinking_blocks = getattr(delta, "thinking_blocks", None)
+                            if thinking_blocks:
+                                logger.info(
+                                    "Found thinking_blocks in delta: %d blocks",
+                                    len(thinking_blocks) if isinstance(thinking_blocks, list) else 1,
+                                )
+
+                        # Check for thinking in choice level (LiteLLM standard)
+                        choice_message = getattr(choice, "message", None)
+                        if choice_message:
+                            for thinking_field in thinking_field_names:
+                                if hasattr(choice_message, thinking_field):
+                                    field_value = getattr(choice_message, thinking_field, None)
+                                    if field_value:
+                                        if thinking_field in [
+                                            "thinking",
+                                            "thinking_content",
+                                            "thoughts",
+                                            "thought",
+                                            "internal_thoughts",
+                                        ]:
+                                            thinking_content = field_value
+                                        else:
+                                            reasoning_content = field_value
+                                        logger.info(
+                                            "Found %s in choice.message: %s", thinking_field, str(field_value)[:100]
+                                        )
+
+                            if hasattr(choice_message, "thinking_blocks"):
+                                thinking_blocks = getattr(choice_message, "thinking_blocks", None)
+                                if thinking_blocks:
+                                    logger.info(
+                                        "Found thinking_blocks in choice.message: %d blocks",
+                                        len(thinking_blocks) if isinstance(thinking_blocks, list) else 1,
+                                    )
+
+                        # Check for thinking in choice level directly
+                        for thinking_field in thinking_field_names:
+                            if hasattr(choice, thinking_field):
+                                field_value = getattr(choice, thinking_field, None)
+                                if field_value:
+                                    if thinking_field in [
+                                        "thinking",
+                                        "thinking_content",
+                                        "thoughts",
+                                        "thought",
+                                        "internal_thoughts",
+                                    ]:
+                                        thinking_content = field_value
+                                    else:
+                                        reasoning_content = field_value
+                                    logger.info("Found %s in choice: %s", thinking_field, str(field_value)[:100])
+
+                        # Check for thinking in chunk level
+                        for thinking_field in thinking_field_names + ["thinking_blocks"]:
+                            if hasattr(chunk, thinking_field):
+                                field_value = getattr(chunk, thinking_field, None)
+                                if field_value:
+                                    if thinking_field == "reasoning_content":
+                                        reasoning_content = field_value
+                                    elif thinking_field == "thinking_blocks":
+                                        thinking_blocks = field_value
+                                    elif thinking_field in [
+                                        "thinking",
+                                        "thinking_content",
+                                        "thoughts",
+                                        "thought",
+                                        "internal_thoughts",
+                                    ]:
+                                        thinking_content = field_value
+                                    else:
+                                        reasoning_content = field_value
+                                    logger.info("Found %s in chunk: %s", thinking_field, str(field_value)[:100])
+
+                        # For Claude models, also check for Claude-specific thinking fields in raw data
+                        if hasattr(chunk, "_raw") and isinstance(chunk._raw, dict):
+                            raw_data = chunk._raw
+                            for field in thinking_field_names + ["thinking_blocks"]:
+                                if field in raw_data:
+                                    field_value = raw_data[field]
+                                    if field_value:
+                                        if field in [
+                                            "thinking",
+                                            "thinking_content",
+                                            "thoughts",
+                                            "thought",
+                                            "internal_thoughts",
+                                        ]:
+                                            thinking_content = field_value
+                                        elif field == "thinking_blocks":
+                                            thinking_blocks = field_value
+                                        else:
+                                            reasoning_content = field_value
+                                        logger.info("Found %s in raw data: %s", field, str(field_value)[:100])
+
+                        # Also check in chunk.model_extra if it exists (Pydantic models)
+                        if hasattr(chunk, "model_extra") and isinstance(chunk.model_extra, dict):
+                            for field in thinking_field_names + ["thinking_blocks"]:
+                                if field in chunk.model_extra:
+                                    field_value = chunk.model_extra[field]
+                                    if field_value:
+                                        if field in [
+                                            "thinking",
+                                            "thinking_content",
+                                            "thoughts",
+                                            "thought",
+                                            "internal_thoughts",
+                                        ]:
+                                            thinking_content = field_value
+                                        elif field == "thinking_blocks":
+                                            thinking_blocks = field_value
+                                        else:
+                                            reasoning_content = field_value
+                                        logger.info("Found %s in chunk.model_extra: %s", field, str(field_value)[:100])
+
+                        # Check if chunk is a dict-like object (fallback)
+                        if hasattr(chunk, "__getitem__"):
+                            try:
+                                for field in thinking_field_names + ["thinking_blocks"]:
+                                    if field in chunk:
+                                        field_value = chunk[field]
+                                        if field_value:
+                                            if field in [
+                                                "thinking",
+                                                "thinking_content",
+                                                "thoughts",
+                                                "thought",
+                                                "internal_thoughts",
+                                            ]:
+                                                thinking_content = field_value
+                                            elif field == "thinking_blocks":
+                                                thinking_blocks = field_value
+                                            else:
+                                                reasoning_content = field_value
+                                            logger.info(
+                                                "Found %s in chunk[%s]: %s", field, field, str(field_value)[:100]
+                                            )
+                            except (KeyError, TypeError):
+                                pass
+
+                        # Debug log for thinking content summary
+                        if thinking and (thinking_content or reasoning_content or thinking_blocks):
+                            logger.info("=== Found thinking/reasoning content ===")
+                            logger.info("thinking_content: %s", bool(thinking_content))
+                            logger.info("reasoning_content: %s", bool(reasoning_content))
+                            logger.info("thinking_blocks: %s", bool(thinking_blocks))
 
                         # Format chunk in OpenAI-compatible format
                         chunk_data: dict[str, Any] = {
@@ -155,8 +350,16 @@ class LLMHelper:
                             chunk_data["choices"][0]["delta"]["tool_calls"] = tool_calls
                         if thinking_content:
                             chunk_data["choices"][0]["delta"]["thinking"] = thinking_content
+                            logger.info("Added thinking content to delta: %s", str(thinking_content)[:100])
                         if reasoning_content:
-                            chunk_data["choices"][0]["delta"]["reasoning"] = reasoning_content
+                            chunk_data["choices"][0]["delta"]["reasoning_content"] = reasoning_content
+                            logger.info("Added reasoning content to delta: %s", str(reasoning_content)[:100])
+                        if thinking_blocks:
+                            chunk_data["choices"][0]["delta"]["thinking_blocks"] = thinking_blocks
+                            logger.info(
+                                "Added thinking blocks to delta: %s",
+                                len(thinking_blocks) if isinstance(thinking_blocks, list) else "1",
+                            )
 
                         # Only yield chunks with meaningful content
                         delta_obj = chunk_data["choices"][0]["delta"]
@@ -164,10 +367,29 @@ class LLMHelper:
                             delta_obj.get("content")
                             or delta_obj.get("tool_calls")
                             or delta_obj.get("thinking")
-                            or delta_obj.get("reasoning")
+                            or delta_obj.get("reasoning_content")
+                            or delta_obj.get("thinking_blocks")
                             or delta_obj.get("role")
                             or finish_reason
                         ):
+                            # Log what we're yielding when thinking is enabled
+                            if thinking:
+                                logger.debug("=== Yielding chunk ===")
+                                logger.debug("Delta keys: %s", list(delta_obj.keys()))
+                                if delta_obj.get("thinking"):
+                                    logger.debug("Thinking content length: %d", len(str(delta_obj.get("thinking"))))
+                                if delta_obj.get("reasoning_content"):
+                                    logger.debug(
+                                        "Reasoning content length: %d", len(str(delta_obj.get("reasoning_content")))
+                                    )
+                                if delta_obj.get("thinking_blocks"):
+                                    logger.debug(
+                                        "Thinking blocks count: %d",
+                                        len(delta_obj.get("thinking_blocks"))
+                                        if isinstance(delta_obj.get("thinking_blocks"), list)
+                                        else 1,
+                                    )
+
                             yield chunk_data
 
                 except Exception as chunk_error:

@@ -1,6 +1,6 @@
 # MIT License
 #
-# Copyright (c) 2025 elevate-human-experiences
+# Copyright (c) 2025 Elevate Human Experiences, LLC
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -26,8 +26,8 @@ import falcon
 import json
 import logging
 from pydantic import ValidationError
-from src.helpers.llm import LLMHelper
-from src.helpers.schema import ChatCompletionRequest, ErrorResponse
+from helpers.llm import LLMHelper
+from helpers.schemas import ChatCompletionRequest, ErrorResponse
 
 logger = logging.getLogger(__name__)
 

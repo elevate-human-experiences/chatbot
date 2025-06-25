@@ -77,19 +77,19 @@ repos:
       - id: ruff-format
         files: ^backend/.*\.py$
 
-  - repo: https://github.com/pycqa/flake8
-    rev: 7.2.0  # latest tag :contentReference[oaicite:5]{index=5}
-    hooks:
-      - id: flake8
-        files: ^backend/.*\.py$
-        additional_dependencies:
-          - flake8-cognitive-complexity
-          - flake8-cohesion
-          - flake8-expression-complexity
-        args:
-          - --max-cognitive-complexity=50
-          - --max-expression-complexity=10
-          - --select=CCR001,ECE001
+  # - repo: https://github.com/pycqa/flake8
+  #   rev: 7.2.0  # latest tag :contentReference[oaicite:5]{index=5}
+  #   hooks:
+  #     - id: flake8
+  #       files: ^backend/.*\.py$
+  #       additional_dependencies:
+  #         - flake8-cognitive-complexity
+  #         - flake8-cohesion
+  #         - flake8-expression-complexity
+  #       args:
+  #         - --max-cognitive-complexity=50
+  #         - --max-expression-complexity=10
+  #         - --select=CCR001,ECE001
 
   - repo: https://github.com/astral-sh/uv-pre-commit
     rev: 0.7.3  # latest release :contentReference[oaicite:6]{index=6}

@@ -1,6 +1,6 @@
 # MIT License
 #
-# Copyright (c) 2025 elevate-human-experiences
+# Copyright (c) 2025 Elevate Human Experiences, LLC
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,7 @@
 
 from pydantic import BaseModel, Field
 from typing import Any, Literal
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 class MessageModel(BaseModel):
@@ -61,7 +61,7 @@ class ToolModel(BaseModel):
 class ChatCompletionRequest(BaseModel):
     """Chat completion request model."""
 
-    messages: list[MessageModel] = Field(..., description="List of chat messages", min_length=1)
+    messages: list[MessageModel] = Field(..., description="list of chat messages", min_length=1)
     model: str | None = Field(None, description="Model to use for completion")
     temperature: float = Field(0.7, description="Sampling temperature", ge=0.0, le=2.0)
     max_tokens: int | None = Field(None, description="Maximum tokens to generate", ge=1)
@@ -86,3 +86,56 @@ class ErrorResponse(BaseModel):
 
     error: str = Field(..., description="Error message")
     details: dict[str, Any] | None = Field(None, description="Additional error details")
+
+
+class UserModel(BaseModel):
+    """User account model."""
+
+    id: str = Field(..., description="Unique identifier for the user")
+    name: str = Field(..., description="Full name of the user")
+    email: str = Field(..., description="Email address of the user")
+    created_at: datetime = Field(
+        default_factory=lambda: datetime.now(timezone.utc), description="Account creation timestamp"
+    )
+
+
+class ProjectModel(BaseModel):
+    """Project context model."""
+
+    id: str = Field(..., description="Unique identifier for the project")
+    name: str = Field(..., description="Name of the project")
+    description: str | None = Field(None, description="Optional project description")
+    created_at: datetime = Field(
+        default_factory=lambda: datetime.now(timezone.utc), description="Project creation timestamp"
+    )
+
+
+class AgentProfileModel(BaseModel):
+    """Configuration profile for an agent, including static instructions."""
+
+    id: str = Field(..., description="Unique identifier for the agent profile")
+    name: str = Field(..., description="Descriptive name of the profile")
+    description: str | None = Field(None, description="Optional description of the agent profile")
+    project_id: str = Field(..., description="Identifier of the project this agent profile belongs to")
+    instructions: list[str] = Field(
+        default_factory=list, description="list of instruction strings for the agent to follow"
+    )
+    created_at: datetime = Field(
+        default_factory=lambda: datetime.now(timezone.utc), description="Profile creation timestamp"
+    )
+
+
+class ConversationModel(BaseModel):
+    """Represents a chat conversation within a project."""
+
+    id: str = Field(..., description="Unique identifier for the conversation")
+    title: str | None = Field(None, description="Optional title for the conversation")
+    project_id: str | None = Field(None, description="Optional identifier of the associated project")
+    user_id: str | None = Field(None, description="Optional identifier of the user in the conversation")
+    agent_profile_id: str = Field(..., description="Identifier of the agent profile used for this conversation")
+    started_at: datetime = Field(
+        default_factory=lambda: datetime.now(timezone.utc), description="Timestamp when the conversation started"
+    )
+    messages: list[MessageModel] = Field(
+        default_factory=list, description="Sequence of messages exchanged in the conversation"
+    )
