@@ -69,7 +69,6 @@ export function ChatArea({
     instructions?: string[];
   } | null>(null);
   const [expandedReasoning, setExpandedReasoning] = useState<{ [key: string]: boolean }>({});
-  const scrollAreaRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
 
@@ -161,13 +160,6 @@ export function ChatArea({
       loadAgentProfile();
     }
   }, [agentProfileId, projectId, loadAgentProfile]);
-
-  // Auto-scroll to bottom when new messages arrive
-  useEffect(() => {
-    if (scrollAreaRef.current) {
-      scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
-    }
-  }, [messages, currentStreamingMessage]);
 
   // Auto-resize textarea
   useEffect(() => {
@@ -500,7 +492,6 @@ export function ChatArea({
       {/* Messages */}
       <ScrollArea
         className="flex-1 px-4 absolute inset-0 top-[72px] bottom-[92px] z-0"
-        ref={scrollAreaRef}
         style={{ height: "auto" }}
       >
         <div className="max-w-3xl mx-auto pt-3 pb-64">
