@@ -2,7 +2,15 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
-import { Send, Square, Bot, User as UserIcon, ChevronDown, ChevronRight } from "lucide-react";
+import {
+  Send,
+  Square,
+  Bot,
+  User as UserIcon,
+  ChevronDown,
+  ChevronRight,
+  ArrowUp,
+} from "lucide-react";
 
 interface Message {
   id: string;
@@ -628,8 +636,23 @@ export function ChatArea({
             )}
           </div>
         </div>
+        {/* Light gray button with up arrow inside ScrollArea */}
+        <button
+          type="button"
+          className="bg-gray-100 text-gray-700 rounded-full shadow hover:bg-gray-200 transition flex items-center justify-center"
+          style={{
+            zIndex: 30,
+            position: "fixed",
+            right: "2rem",
+            bottom: "8rem",
+            width: "48px",
+            height: "48px",
+            padding: 0,
+          }}
+        >
+          <ArrowUp className="w-5 h-5" />
+        </button>
       </ScrollArea>
-
       {/* Input */}
       <div className="border-t border-gray-200 bg-white flex-shrink-0 w-full fixed left-0 bottom-0 z-10">
         <div className="max-w-3xl mx-auto p-4">
