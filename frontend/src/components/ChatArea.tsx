@@ -472,7 +472,7 @@ export function ChatArea({
     <div className="flex-1 flex flex-col bg-white h-[95vh]">
       {/* Header */}
       {agentProfile && (
-        <div className="border-b border-gray-200 p-4 bg-white flex-shrink-0">
+        <div className="fixed border-gray-200 p-4 bg-white flex-shrink-0">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center">
@@ -490,8 +490,12 @@ export function ChatArea({
       )}
 
       {/* Messages */}
-      <ScrollArea className="h-full px-4" ref={scrollAreaRef}>
-        <div className="max-w-3xl mx-auto py-6">
+      <ScrollArea
+        className="flex-1 px-4 absolute inset-0 top-[72px] bottom-[92px] z-0"
+        ref={scrollAreaRef}
+        style={{ height: "auto" }}
+      >
+        <div className="max-w-3xl mx-auto pt-3 pb-64">
           {messages.length === 0 && !currentStreamingMessage && agentProfile && (
             <div className="text-center py-12">
               <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -627,7 +631,7 @@ export function ChatArea({
       </ScrollArea>
 
       {/* Input */}
-      <div className="border-t border-gray-200 bg-white flex-shrink-0">
+      <div className="border-t border-gray-200 bg-white flex-shrink-0 w-full fixed left-0 bottom-0 z-10">
         <div className="max-w-3xl mx-auto p-4">
           <div className="flex items-end space-x-3">
             <div className="flex-1 relative">

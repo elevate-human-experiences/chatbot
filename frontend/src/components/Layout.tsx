@@ -8,9 +8,9 @@ export function Layout() {
   const showNavigation = location.pathname !== "/";
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="fixed inset-0 bg-gray-50 flex flex-col">
       {showNavigation && <Navigation />}
-      <main className={showNavigation ? "" : "h-screen"}>
+      <main className="flex-1 flex flex-col">
         <Outlet />
       </main>
     </div>

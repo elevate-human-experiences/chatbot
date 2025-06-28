@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Sidebar } from "@/components/Sidebar";
 import { ChatArea } from "@/components/ChatArea";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export function Chat() {
   const { projectId } = useParams<{ projectId: string }>();
@@ -82,13 +83,15 @@ export function Chat() {
         projectId={projectId}
         refreshKey={refreshSidebar}
       />
-      <ChatArea
-        conversationId={selectedConversationId}
-        agentProfileId={selectedAgentProfileId}
-        onConversationCreated={handleConversationCreated}
-        onNewChat={handleNewChat}
-        projectId={projectId}
-      />
+      <ScrollArea className="flex-1 h-full">
+        <ChatArea
+          conversationId={selectedConversationId}
+          agentProfileId={selectedAgentProfileId}
+          onConversationCreated={handleConversationCreated}
+          onNewChat={handleNewChat}
+          projectId={projectId}
+        />
+      </ScrollArea>
     </div>
   );
 }
