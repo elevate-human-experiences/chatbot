@@ -1,8 +1,7 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Sidebar } from "@/components/Sidebar";
 import { ChatArea } from "@/components/ChatArea";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 export function Chat() {
   const { projectId } = useParams<{ projectId: string }>();
@@ -11,6 +10,7 @@ export function Chat() {
   const [selectedAgentProfileId, setSelectedAgentProfileId] = useState<string | undefined>();
   const [refreshSidebar, setRefreshSidebar] = useState(0);
   const [hasInitialized, setHasInitialized] = useState(false);
+  const chatAreaWrapperRef = useRef<HTMLDivElement>(null);
 
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
 
@@ -48,6 +48,24 @@ export function Chat() {
     loadDefaultAgent();
   }, [projectId, hasInitialized, selectedConversationId, selectedAgentProfileId, apiBaseUrl]);
 
+  // Auto-scroll to bottom when ChatArea content grows
+  useEffect(() => {
+    const el = chatAreaWrapperRef.current;
+    if (!el) return;
+
+    // Create a MutationObserver to watch for content changes
+    const observer = new MutationObserver(() => {
+      el.scrollTop = el.scrollHeight;
+    });
+
+    observer.observe(el, { childList: true, subtree: true });
+
+    // Initial scroll
+    el.scrollTop = el.scrollHeight;
+
+    return () => observer.disconnect();
+  }, [selectedConversationId, selectedAgentProfileId, refreshSidebar]);
+
   const handleConversationSelect = useCallback((conversationId: string) => {
     setSelectedConversationId(conversationId);
     setSelectedAgentProfileId(undefined); // Clear when selecting existing conversation
@@ -83,7 +101,7 @@ export function Chat() {
         projectId={projectId}
         refreshKey={refreshSidebar}
       />
-      <ScrollArea className="flex-1 h-full">
+      <div className="flex-1 h-full overflow-y-auto" ref={chatAreaWrapperRef}>
         <ChatArea
           conversationId={selectedConversationId}
           agentProfileId={selectedAgentProfileId}
@@ -91,7 +109,7 @@ export function Chat() {
           onNewChat={handleNewChat}
           projectId={projectId}
         />
-      </ScrollArea>
+      </div>
     </div>
   );
 }
