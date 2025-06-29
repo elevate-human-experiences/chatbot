@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Sidebar } from "@/components/Sidebar";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { ChatArea } from "@/components/ChatArea";
 
 import { ArrowUp } from "lucide-react";
@@ -128,13 +129,15 @@ export function Chat() {
 
   return (
     <div className="flex h-screen w-full bg-white overflow-hidden">
-      <Sidebar
-        selectedConversationId={selectedConversationId}
-        onConversationSelect={handleConversationSelect}
-        onNewConversation={handleNewConversation}
-        projectId={projectId}
-        refreshKey={refreshSidebar}
-      />
+      <ScrollArea className="h-full">
+        <Sidebar
+          selectedConversationId={selectedConversationId}
+          onConversationSelect={handleConversationSelect}
+          onNewConversation={handleNewConversation}
+          projectId={projectId}
+          refreshKey={refreshSidebar}
+        />
+      </ScrollArea>
       <div className="flex-1 h-full overflow-y-auto" ref={chatAreaWrapperRef}>
         <ChatArea
           conversationId={selectedConversationId}
