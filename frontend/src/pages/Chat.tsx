@@ -3,6 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Sidebar } from "@/components/Sidebar";
 import { ChatArea } from "@/components/ChatArea";
 
+import { ArrowUp } from "lucide-react";
+
 export function Chat() {
   const { projectId } = useParams<{ projectId: string }>();
   const navigate = useNavigate();
@@ -109,6 +111,22 @@ export function Chat() {
           onNewChat={handleNewChat}
           projectId={projectId}
         />
+        {/* Light gray button with up arrow inside ScrollArea */}
+        <button
+          type="button"
+          className="bg-gray-100 text-gray-700 rounded-full shadow hover:bg-gray-200 transition flex items-center justify-center"
+          style={{
+            zIndex: 30,
+            position: "fixed",
+            right: "2rem",
+            bottom: "8rem",
+            width: "48px",
+            height: "48px",
+            padding: 0,
+          }}
+        >
+          <ArrowUp className="w-5 h-5" />
+        </button>
       </div>
     </div>
   );
