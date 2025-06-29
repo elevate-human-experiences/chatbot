@@ -207,7 +207,7 @@ export function Sidebar({
   return (
     <div className="w-80 bg-gray-900 text-white border-r border-gray-700 flex flex-col h-full">
       {/* Current User Section */}
-      <div className="p-4 border-b border-gray-700">
+      <div className="fixed p-4 border-b border-gray-700 z-10 bg-gray-800 w-80">
         <div className="flex items-center space-x-3 p-3 rounded-lg bg-gray-800">
           <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
             <User className="w-4 h-4 text-white" />
@@ -226,7 +226,7 @@ export function Sidebar({
       </div>
 
       {/* Agent Profiles and Conversations */}
-      <ScrollArea className="flex-1 p-4">
+      <ScrollArea className="flex-1 p-4 mt-20">
         <div className="space-y-2">
           {agentProfiles.length === 0 ? (
             <div className="text-center text-gray-400 text-sm py-8">No agent profiles found</div>
