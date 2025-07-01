@@ -5,7 +5,7 @@ export function Layout() {
   const location = useLocation();
 
   // Don't show navigation on the home page (chat interface)
-  const showNavigation = location.pathname !== "/";
+  const showNavigation = location.pathname !== "/" && !location.pathname.startsWith("/agent");
 
   return (
     <div className="fixed inset-0 bg-gray-50 flex flex-col">
