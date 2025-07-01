@@ -464,7 +464,7 @@ export function ChatArea({
     <div className="flex-1 flex flex-col bg-white h-[95vh]">
       {/* Header */}
       {agentProfile && (
-        <div className="fixed border-gray-200 p-4 bg-white flex-shrink-0">
+        <div className="relative border-gray-200 p-4 bg-white flex-shrink-0">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center">
@@ -482,11 +482,8 @@ export function ChatArea({
       )}
 
       {/* Messages */}
-      <ScrollArea
-        className="flex-1 px-4 absolute inset-0 top-[72px] bottom-[92px] z-0"
-        style={{ height: "auto" }}
-      >
-        <div className="max-w-3xl mx-auto pt-3 pb-64">
+      <ScrollArea className="flex-1 px-4 inset-0 z-0" style={{ height: "auto" }}>
+        <div className="max-w-3xl mx-auto pt-3 pb-32 mb-32">
           {messages.length === 0 && !currentStreamingMessage && agentProfile && (
             <div className="text-center py-12">
               <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -621,8 +618,15 @@ export function ChatArea({
         </div>
       </ScrollArea>
       {/* Input */}
-      <div className="border-t border-gray-200 bg-white flex-shrink-0 w-full fixed left-0 bottom-0 z-10">
-        <div className="max-w-3xl mx-auto p-4">
+      <div className="z-10 w-full flex justify-center fixed bottom-0 left-0 bg-transparent">
+        <div
+          className="p-5 bg-white rounded-t-lg"
+          style={{
+            width: "100%",
+            maxWidth: "520px", // Menos de la mitad de la pantalla típica
+            marginLeft: "280px",
+          }}
+        >
           <div className="flex items-end space-x-3">
             <div className="flex-1 relative">
               <Textarea
@@ -632,7 +636,7 @@ export function ChatArea({
                 onKeyPress={handleKeyPress}
                 placeholder={getPlaceholder()}
                 disabled={isLoading || !agentProfileId}
-                className="min-h-[52px] max-h-[120px] resize-none border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-lg pr-12"
+                className="min-h-[52px] max-h-[120px] resize-none border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-lg pr-12 w-full"
                 rows={1}
               />
               <div className="absolute right-3 bottom-3">

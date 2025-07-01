@@ -129,7 +129,7 @@ export function Chat() {
 
   return (
     <div className="flex h-screen w-full bg-white">
-      <ScrollArea className="h-full">
+      <ScrollArea className="h-full bg-gray-900">
         <Sidebar
           selectedConversationId={selectedConversationId}
           onConversationSelect={handleConversationSelect}
