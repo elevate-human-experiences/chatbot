@@ -4,8 +4,6 @@ import { Sidebar } from "@/components/Sidebar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ChatArea } from "@/components/ChatArea";
 
-import { ArrowUp } from "lucide-react";
-
 export function Chat() {
   const { projectId } = useParams<{ projectId: string }>();
   const navigate = useNavigate();
@@ -50,56 +48,6 @@ export function Chat() {
 
     loadDefaultAgent();
   }, [projectId, hasInitialized, selectedConversationId, selectedAgentProfileId, apiBaseUrl]);
-
-  // Auto-scroll to bottom when ChatArea content grows
-  useEffect(() => {
-    const el = chatAreaWrapperRef.current;
-    if (!el) return;
-
-    // Create a MutationObserver to watch for content changes
-    const observer = new MutationObserver(() => {
-      el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
-    });
-
-    observer.observe(el, { childList: true, subtree: true });
-
-    // Initial scroll
-    el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
-
-    return () => observer.disconnect();
-  }, [selectedConversationId, selectedAgentProfileId, refreshSidebar]);
-
-  // Show/hide scroll up button and set opacity based on scroll position
-  const [showScrollUp, setShowScrollUp] = useState(false);
-
-  useEffect(() => {
-    const el = chatAreaWrapperRef.current;
-    if (!el) return;
-
-    const updateButton = () => {
-      const canScroll = el.scrollHeight > el.clientHeight + 1;
-      const nearTop = el.scrollTop < 0;
-      setShowScrollUp(canScroll && !nearTop);
-    };
-
-    // Mutation observer for content changes
-    const observer = new MutationObserver(() => {
-      updateButton();
-    });
-
-    observer.observe(el, { childList: true, subtree: true });
-
-    // Listen to scroll events for opacity
-    el.addEventListener("scroll", updateButton);
-
-    // Initial state
-    updateButton();
-
-    return () => {
-      observer.disconnect();
-      el.removeEventListener("scroll", updateButton);
-    };
-  }, [selectedConversationId, selectedAgentProfileId, refreshSidebar]);
 
   const handleConversationSelect = useCallback((conversationId: string) => {
     setSelectedConversationId(conversationId);
@@ -146,27 +94,6 @@ export function Chat() {
           onNewChat={handleNewChat}
           projectId={projectId}
         />
-        <button
-          type="button"
-          className="bg-gray-100 text-gray-700 rounded-full shadow hover:bg-gray-200 transition flex items-center justify-center"
-          style={{
-            zIndex: 30,
-            position: "fixed",
-            right: "2rem",
-            bottom: "8rem",
-            width: "48px",
-            height: "48px",
-            padding: 0,
-            pointerEvents: showScrollUp ? "auto" : "none",
-            transition: "opacity 0.3s",
-          }}
-          onClick={() => {
-            const el = chatAreaWrapperRef.current;
-            if (el) el.scrollTo({ top: 0, behavior: "smooth" });
-          }}
-        >
-          <ArrowUp className="w-5 h-5" />
-        </button>
       </div>
     </div>
   );
