@@ -615,59 +615,52 @@ export function ChatArea({
               </div>
             )}
           </div>
-        </div>
-      </ScrollArea>
-      {/* Input */}
-      <div className="z-10 w-full flex justify-center fixed bottom-0 left-0 bg-transparent">
-        <div
-          className="p-5 bg-white rounded-t-lg"
-          style={{
-            width: "100%",
-            maxWidth: "520px", // Menos de la mitad de la pantalla típica
-            marginLeft: "280px",
-          }}
-        >
-          <div className="flex items-end space-x-3">
-            <div className="flex-1 relative">
-              <Textarea
-                ref={textareaRef}
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder={getPlaceholder()}
-                disabled={isLoading || !agentProfileId}
-                className="min-h-[52px] max-h-[120px] resize-none border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-lg pr-12 w-full"
-                rows={1}
-              />
-              <div className="absolute right-3 bottom-3">
-                {isLoading ? (
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={stopGeneration}
-                    className="h-8 w-8 p-0 text-gray-500 hover:text-red-600"
-                  >
-                    <Square className="w-4 h-4" />
-                  </Button>
-                ) : (
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={sendMessage}
-                    disabled={!input.trim() || !agentProfileId}
-                    className="h-8 w-8 p-0 text-gray-500 hover:text-blue-600 disabled:text-gray-300"
-                  >
-                    <Send className="w-4 h-4" />
-                  </Button>
-                )}
+          {/* Input */}
+          <div className="z-10 flex justify-center fixed bottom-0 w-3xl mx-auto">
+            <div className="p-5 bg-white rounded-t-lg w-3xl">
+              <div className="flex items-end space-x-3">
+                <div className="flex-1 relative">
+                  <Textarea
+                    ref={textareaRef}
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    placeholder={getPlaceholder()}
+                    disabled={isLoading || !agentProfileId}
+                    className="min-h-[52px] max-h-[120px] resize-none border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-lg pr-12 w-full"
+                    rows={1}
+                  />
+                  <div className="absolute right-3 bottom-3">
+                    {isLoading ? (
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={stopGeneration}
+                        className="h-8 w-8 p-0 text-gray-500 hover:text-red-600"
+                      >
+                        <Square className="w-4 h-4" />
+                      </Button>
+                    ) : (
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={sendMessage}
+                        disabled={!input.trim() || !agentProfileId}
+                        className="h-8 w-8 p-0 text-gray-500 hover:text-blue-600 disabled:text-gray-300"
+                      >
+                        <Send className="w-4 h-4" />
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className="mt-2 text-xs text-gray-500 text-center">
+                Press Enter to send, Shift+Enter for new line
               </div>
             </div>
           </div>
-          <div className="mt-2 text-xs text-gray-500 text-center">
-            Press Enter to send, Shift+Enter for new line
-          </div>
         </div>
-      </div>
+      </ScrollArea>
     </div>
   );
 }
