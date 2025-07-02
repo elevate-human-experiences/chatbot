@@ -481,9 +481,12 @@ export function ChatArea({
         </div>
       )}
 
-      {/* Messages */}
+      {/* CHAT */}
+
       <div className="flex-1 px-4 inset-0 overflow-y-auto">
         <div className="max-w-3xl mx-auto pt-3 pb-32">
+          {/* if empty/new chat or not selected */}
+
           {messages.length === 0 && !currentStreamingMessage && agentProfile && (
             <div className="text-center py-12">
               <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -513,6 +516,8 @@ export function ChatArea({
               </div>
             </div>
           )}
+
+          {/* MESSAGES */}
 
           <div className="space-y-6">
             {messages.map((message) => (
@@ -615,7 +620,9 @@ export function ChatArea({
               </div>
             )}
           </div>
-          {/* Input */}
+
+          {/* Text Area input */}
+
           <div className="z-10 flex justify-center fixed bottom-0 w-3xl mx-auto">
             <div className="p-5 bg-white rounded-t-lg w-3xl">
               <div className="flex items-end space-x-3">
