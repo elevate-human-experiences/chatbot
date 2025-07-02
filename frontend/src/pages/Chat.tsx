@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Sidebar } from "@/components/Sidebar";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -11,7 +11,6 @@ export function Chat() {
   const [selectedAgentProfileId, setSelectedAgentProfileId] = useState<string | undefined>();
   const [refreshSidebar, setRefreshSidebar] = useState(0);
   const [hasInitialized, setHasInitialized] = useState(false);
-  const chatAreaWrapperRef = useRef<HTMLDivElement>(null);
 
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
 
@@ -86,7 +85,7 @@ export function Chat() {
           refreshKey={refreshSidebar}
         />
       </ScrollArea>
-      <div className="flex-1 h-full overflow-y-auto" ref={chatAreaWrapperRef}>
+      <div className="flex-1 h-full overflow-y-auto">
         <ChatArea
           conversationId={selectedConversationId}
           agentProfileId={selectedAgentProfileId}
