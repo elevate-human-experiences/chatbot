@@ -483,7 +483,7 @@ export function ChatArea({
 
       {/* Messages */}
       <ScrollArea className="flex-1 px-4 inset-0 z-0" style={{ height: "auto" }}>
-        <div className="max-w-3xl mx-auto pt-3 pb-32 mb-32">
+        <div className="max-w-3xl mx-auto pt-3 pb-32">
           {messages.length === 0 && !currentStreamingMessage && agentProfile && (
             <div className="text-center py-12">
               <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
