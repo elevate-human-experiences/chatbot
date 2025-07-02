@@ -11,9 +11,12 @@ export function useChatLogic(
   const [refreshSidebar, setRefreshSidebar] = useState(0);
   const [hasInitialized, setHasInitialized] = useState(false);
 
-  // Redirige si no hay projectId
+  // Redirige si no hay projectId, pero solo si la ruta es de chat
   useEffect(() => {
-    if (!projectId) {
+    // Solo redirige si la ruta actual es / o /projects/:projectId/...
+    const isChatRoute =
+      window.location.pathname === "/" || window.location.pathname.startsWith("/projects/");
+    if (!projectId && isChatRoute) {
       navigate("/");
       return;
     }
