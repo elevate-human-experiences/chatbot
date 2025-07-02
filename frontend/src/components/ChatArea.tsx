@@ -197,6 +197,13 @@ export function ChatArea({
     };
   }, [messages.length, currentStreamingMessage]);
 
+  // Scroll to bottom when messages grow
+  useEffect(() => {
+    const container = messagesContainerRef.current;
+    if (!container) return;
+    container.scrollTo({ top: container.scrollHeight, behavior: "smooth" });
+  }, [messages.length, currentStreamingMessage]);
+
   // Scroll to top handler
   const handleScrollTop = () => {
     const container = messagesContainerRef.current;
