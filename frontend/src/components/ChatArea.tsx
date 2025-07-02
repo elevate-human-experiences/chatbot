@@ -722,7 +722,7 @@ export function ChatArea({
         </div>
         {/* Botón redondo gris con chevron hacia arriba, solo si hay scroll */}
         <div
-          className={`fixed bottom-12 right-12 transition-opacity duration-300 ${
+          className={`fixed bottom-9 right-15 transition-opacity duration-300 ${
             showScrollTopButton
               ? "opacity-100 pointer-events-auto"
               : "opacity-0 pointer-events-none"
