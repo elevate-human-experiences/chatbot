@@ -9,7 +9,7 @@ import {
   User as UserIcon,
   ChevronDown,
   ChevronRight,
-  ArrowUp,
+  ChevronUp,
 } from "lucide-react";
 
 interface Message {
@@ -71,6 +71,10 @@ export function ChatArea({
   const [expandedReasoning, setExpandedReasoning] = useState<{ [key: string]: boolean }>({});
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
+
+  // Ref for the scrollable messages container
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const [showScrollTopButton, setShowScrollTopButton] = useState(false);
 
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
 
@@ -168,6 +172,38 @@ export function ChatArea({
       textareaRef.current.style.height = Math.min(textareaRef.current.scrollHeight, 120) + "px";
     }
   }, [input]);
+
+  // Show button only if scrollable, with smooth show/hide
+  useEffect(() => {
+    const container = messagesContainerRef.current;
+    if (!container) return;
+
+    const handleScroll = () => {
+      setShowScrollTopButton(container.scrollTop > 100);
+    };
+
+    const checkScrollable = () => {
+      if (!container) return;
+      setShowScrollTopButton(
+        container.scrollHeight > container.clientHeight && container.scrollTop > 100
+      );
+    };
+
+    container.addEventListener("scroll", handleScroll);
+    checkScrollable();
+
+    return () => {
+      container.removeEventListener("scroll", handleScroll);
+    };
+  }, [messages.length, currentStreamingMessage]);
+
+  // Scroll to top handler
+  const handleScrollTop = () => {
+    const container = messagesContainerRef.current;
+    if (container) {
+      container.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
 
   const createNewConversation = async (firstMessage: Message) => {
     if (!agentProfileId || !projectId) return null;
@@ -491,7 +527,7 @@ export function ChatArea({
 
       {/* CHAT */}
 
-      <div className="flex-1 px-4 inset-0 overflow-y-auto">
+      <div className="flex-1 px-4 inset-0 overflow-y-auto" ref={messagesContainerRef}>
         <div className="max-w-3xl mx-auto pt-3 pb-32">
           {/* if empty/new chat or not selected */}
 
@@ -675,11 +711,23 @@ export function ChatArea({
             </div>
           </div>
         </div>
-
-        {/* Botón redondo rojo con flecha hacia arriba */}
-        <button className="fixed bottom-10 right-20 bg-gray-300 hover:bg-gray-400 text-white rounded-full w-7 h-7 flex items-center justify-center">
-          <ArrowUp className="w-4 h-4" />
-        </button>
+        {/* Botón redondo gris con chevron hacia arriba, solo si hay scroll */}
+        <div
+          className={`fixed bottom-12 right-12 transition-opacity duration-300 ${
+            showScrollTopButton
+              ? "opacity-100 pointer-events-auto"
+              : "opacity-0 pointer-events-none"
+          }`}
+        >
+          <button
+            className="bg-gray-400 hover:bg-gray-500 text-white rounded-full w-9 h-9 flex items-center justify-center transition-all duration-300"
+            type="button"
+            onClick={handleScrollTop}
+            aria-label="Scroll to top"
+          >
+            <ChevronUp className="w-5 h-5" />
+          </button>
+        </div>
       </div>
     </div>
   );
