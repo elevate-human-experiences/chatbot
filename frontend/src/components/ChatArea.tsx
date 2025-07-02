@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
+//import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
 import { Send, Square, Bot, User as UserIcon, ChevronDown, ChevronRight } from "lucide-react";
 
@@ -482,7 +482,7 @@ export function ChatArea({
       )}
 
       {/* Messages */}
-      <ScrollArea className="flex-1 px-4 inset-0 z-0" style={{ height: "auto" }}>
+      <div className="flex-1 px-4 inset-0 overflow-y-auto">
         <div className="max-w-3xl mx-auto pt-3 pb-32">
           {messages.length === 0 && !currentStreamingMessage && agentProfile && (
             <div className="text-center py-12">
@@ -660,7 +660,7 @@ export function ChatArea({
             </div>
           </div>
         </div>
-      </ScrollArea>
+      </div>
     </div>
   );
 }
