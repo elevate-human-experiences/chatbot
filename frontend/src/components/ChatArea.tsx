@@ -2,7 +2,15 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 //import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
-import { Send, Square, Bot, User as UserIcon, ChevronDown, ChevronRight } from "lucide-react";
+import {
+  Send,
+  Square,
+  Bot,
+  User as UserIcon,
+  ChevronDown,
+  ChevronRight,
+  ArrowUp,
+} from "lucide-react";
 
 interface Message {
   id: string;
@@ -667,6 +675,11 @@ export function ChatArea({
             </div>
           </div>
         </div>
+
+        {/* Botón redondo rojo con flecha hacia arriba */}
+        <button className="fixed bottom-10 right-20 bg-gray-300 hover:bg-gray-400 text-white rounded-full w-7 h-7 flex items-center justify-center">
+          <ArrowUp className="w-4 h-4" />
+        </button>
       </div>
     </div>
   );
