@@ -536,34 +536,36 @@ export function ChatArea({
 
       <div className="flex-1 px-4 inset-0 overflow-y-auto" ref={messagesContainerRef}>
         <div className="max-w-3xl mx-auto pt-3 pb-32">
-          {/* if empty/new chat or not selected */}
+          {/* NO MESSAGES */}
 
           {messages.length === 0 && !currentStreamingMessage && agentProfile && (
-            <div className="text-center py-12">
-              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Bot className="w-8 h-8 text-purple-600" />
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Chat with {agentProfile.name}
-              </h3>
-              <p className="text-gray-500 mb-6 max-w-md mx-auto">
-                {agentProfile.description || "Start a conversation by typing a message below."}
-              </p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-md mx-auto">
-                <button
-                  onClick={() => setInput("Hello! How can you help me today?")}
-                  className="p-3 text-left border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  <div className="font-medium text-sm text-gray-900">Say hello</div>
-                  <div className="text-xs text-gray-500">Start with a greeting</div>
-                </button>
-                <button
-                  onClick={() => setInput("What can you help me with?")}
-                  className="p-3 text-left border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  <div className="font-medium text-sm text-gray-900">Get help</div>
-                  <div className="text-xs text-gray-500">Learn about capabilities</div>
-                </button>
+            <div className="flex items-center justify-center min-h-[65vh]">
+              <div className="text-center w-full">
+                <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Bot className="w-8 h-8 text-purple-600" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  Chat with {agentProfile.name}
+                </h3>
+                <p className="text-gray-500 mb-6 max-w-md mx-auto">
+                  {agentProfile.description || "Start a conversation by typing a message below."}
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-md mx-auto">
+                  <button
+                    onClick={() => setInput("Hello! How can you help me today?")}
+                    className="p-3 text-left border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                  >
+                    <div className="font-medium text-sm text-gray-900">Say hello</div>
+                    <div className="text-xs text-gray-500">Start with a greeting</div>
+                  </button>
+                  <button
+                    onClick={() => setInput("What can you help me with?")}
+                    className="p-3 text-left border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                  >
+                    <div className="font-medium text-sm text-gray-900">Get help</div>
+                    <div className="text-xs text-gray-500">Learn about capabilities</div>
+                  </button>
+                </div>
               </div>
             </div>
           )}
