@@ -71,7 +71,7 @@ export function Layout() {
               </nav>
               {/* Sidebar (conversaciones, perfiles, etc) solo si expandido */}
               {showChat && sidebarVisible && (
-                <ScrollArea className="h-full bg-gray-900 flex-1">
+                <ScrollArea className="flex-1 min-h-0 h-0 bg-gray-900 overflow-hidden">
                   <Sidebar
                     selectedConversationId={chatLogic.selectedConversationId}
                     onConversationSelect={chatLogic.handleConversationSelect}
@@ -100,7 +100,7 @@ export function Layout() {
                   <ChevronRight className="w-5 h-5" />
                 )}
               </button>
-              <div className="w-full">
+              <div className="h-full w-full">
                 <Outlet />
               </div>
             </div>
@@ -156,7 +156,7 @@ export function Layout() {
                 <ChevronRight className="w-5 h-5" />
               )}
             </button>
-            <div className="w-full">
+            <div className="h-full w-full">
               <Outlet />
             </div>
           </div>
