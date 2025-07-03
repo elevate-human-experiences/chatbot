@@ -206,7 +206,7 @@ export function Sidebar({
   return (
     <div className="w-80 bg-gray-900 text-white border-r border-gray-700 flex flex-col h-full min-h-0 overflow-hidden">
       {/* Current User Section */}
-      <div className="p-4 border-b border-gray-700 z-10 bg-gray-800 w-80 flex-shrink-0">
+      <div className="fixed p-4 border-b border-gray-700 z-0 bg-gray-800 w-80 flex-shrink-0">
         <div className="flex items-center space-x-3 p-3 rounded-lg bg-gray-800">
           <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
             <User className="w-4 h-4 text-white" />
@@ -225,7 +225,7 @@ export function Sidebar({
       </div>
 
       {/* Agent Profiles and Conversations */}
-      <div className="flex-1 min-h-0 p-4 overflow-x-hidden">
+      <div className="mt-20 flex-1 min-h-0 p-4 overflow-x-hidden">
         <div className="space-y-2">
           {agentProfiles.length === 0 ? (
             <div className="text-center text-gray-400 text-sm py-8">No agent profiles found</div>
