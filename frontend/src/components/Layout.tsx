@@ -25,18 +25,29 @@ export function Layout() {
   const chatLogic = useChatLogic(projectId, apiBaseUrl, navigate);
   const showChat = Boolean(projectId);
 
-  if (showChat) {
-    return (
-      <ChatLogicContext.Provider value={{ ...chatLogic, projectId, apiBaseUrl, navigate }}>
-        <div className="flex h-screen">
-          {/* Sidebar + Navigation */}
-          {sidebarVisible && (
+  // Sidebar width depending on state and projectId
+  const expandedSidebarWidth = 280;
+  const collapsedSidebarWidth = 90; // Más ancho cuando está oculta
+  const sidebarWidth = sidebarVisible ? expandedSidebarWidth : collapsedSidebarWidth;
+
+  return (
+    <>
+      {showChat ? (
+        <ChatLogicContext.Provider value={{ ...chatLogic, projectId, apiBaseUrl, navigate }}>
+          {/* Main layout with sidebar toggle */}
+          <div className="flex h-screen">
+            {/* Sidebar + Navigation */}
             <div
               className="flex flex-col bg-gray-100 border-r border-gray-200 transition-all duration-200"
-              style={{ width: 280, minWidth: 80 }}
+              style={{ width: sidebarWidth, minWidth: collapsedSidebarWidth }}
             >
               {/* Navigation menu */}
-              <nav className="flex flex-col items-start h-auto p-3 gap-8 border-b border-gray-200">
+              <nav
+                className={cn(
+                  "flex flex-col h-auto p-3 gap-2 border-b border-gray-200",
+                  sidebarVisible ? "items-start gap-8" : "items-center gap-4"
+                )}
+              >
                 {navItems.map((item) => {
                   const Icon = item.icon;
                   const isActive = location.pathname === item.path;
@@ -45,37 +56,99 @@ export function Layout() {
                       key={item.path}
                       to={item.path}
                       className={cn(
-                        "flex items-center gap-3 text-gray-700 hover:text-blue-600 transition-colors w-full",
+                        "flex items-center text-gray-700 hover:text-blue-600 transition-colors w-full py-2",
+                        sidebarVisible ? "gap-3" : "justify-center",
                         isActive ? "text-blue-500" : ""
                       )}
                     >
-                      <Icon className="w-5 h-5" />
-                      <span>{item.label}</span>
+                      <Icon className="w-6 h-6" />
+                      {sidebarVisible && (
+                        <span className="text-base font-normal">{item.label}</span>
+                      )}
                     </Link>
                   );
                 })}
               </nav>
-              {/* Sidebar (conversaciones, perfiles, etc) */}
-              <ScrollArea className="h-full bg-gray-900 flex-1">
-                <Sidebar
-                  selectedConversationId={chatLogic.selectedConversationId}
-                  onConversationSelect={chatLogic.handleConversationSelect}
-                  onNewConversation={chatLogic.handleNewConversation}
-                  projectId={projectId}
-                  refreshKey={chatLogic.refreshSidebar}
-                />
-              </ScrollArea>
+              {/* Sidebar (conversaciones, perfiles, etc) solo si expandido */}
+              {showChat && sidebarVisible && (
+                <ScrollArea className="h-full bg-gray-900 flex-1">
+                  <Sidebar
+                    selectedConversationId={chatLogic.selectedConversationId}
+                    onConversationSelect={chatLogic.handleConversationSelect}
+                    onNewConversation={chatLogic.handleNewConversation}
+                    projectId={projectId}
+                    refreshKey={chatLogic.refreshSidebar}
+                  />
+                </ScrollArea>
+              )}
             </div>
-          )}
-          {/* Main content area */}
+            {/* Main content area */}
+            <div className="flex-1 bg-white relative">
+              <button
+                onClick={() => setSidebarVisible((v) => !v)}
+                className="fixed top-4 z-30 bg-white border border-gray-300 rounded-full shadow p-1 hover:bg-gray-50 transition"
+                style={{
+                  left: sidebarWidth,
+                  transform: "translateX(-50%)",
+                  transition: "left 0.2s",
+                }}
+                aria-label={sidebarVisible ? "Ocultar menú" : "Mostrar menú"}
+              >
+                {sidebarVisible ? (
+                  <ChevronLeft className="w-5 h-5" />
+                ) : (
+                  <ChevronRight className="w-5 h-5" />
+                )}
+              </button>
+              <div className="w-full">
+                <Outlet />
+              </div>
+            </div>
+          </div>
+        </ChatLogicContext.Provider>
+      ) : (
+        // Layout base sin projectId, pero con botón de mostrar/ocultar sidebar
+        <div className="flex h-screen">
+          <div
+            className="flex flex-col bg-gray-100 border-r border-gray-200 transition-all duration-200"
+            style={{ width: sidebarWidth, minWidth: collapsedSidebarWidth }}
+          >
+            <nav
+              className={cn(
+                "flex flex-col h-full p-3 border-b border-gray-200",
+                sidebarVisible ? "items-start gap-8" : "items-center gap-4"
+              )}
+            >
+              {navItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = location.pathname === item.path;
+                return (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    className={cn(
+                      "flex items-center text-gray-700 hover:text-blue-600 transition-colors w-full py-2",
+                      sidebarVisible ? "gap-3" : "justify-center",
+                      isActive ? "text-blue-500" : ""
+                    )}
+                  >
+                    <Icon className="w-6 h-6" />
+                    {sidebarVisible && <span className="text-base font-normal">{item.label}</span>}
+                  </Link>
+                );
+              })}
+            </nav>
+          </div>
           <div className="flex-1 bg-white relative">
             <button
               onClick={() => setSidebarVisible((v) => !v)}
-              className="absolute top-4 left-0 z-20 bg-white border border-gray-300 rounded-full shadow p-1 hover:bg-gray-50 transition"
+              className="fixed top-4 z-30 bg-white border border-gray-300 rounded-full shadow p-1 hover:bg-gray-50 transition"
               style={{
+                left: sidebarWidth,
                 transform: "translateX(-50%)",
-                left: sidebarVisible ? 280 : 0,
+                transition: "left 0.2s",
               }}
+              aria-label={sidebarVisible ? "Ocultar menú" : "Mostrar menú"}
             >
               {sidebarVisible ? (
                 <ChevronLeft className="w-5 h-5" />
@@ -88,42 +161,7 @@ export function Layout() {
             </div>
           </div>
         </div>
-      </ChatLogicContext.Provider>
-    );
-  }
-
-  // Si no hay projectId, solo renderiza el layout base y el menú
-  return (
-    <div className="flex h-screen">
-      <div
-        className="flex flex-col bg-gray-100 border-r border-gray-200 transition-all duration-200"
-        style={{ width: 80, minWidth: 80 }}
-      >
-        <nav className="flex flex-col items-center h-full p-3 gap-8">
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = location.pathname === item.path;
-            return (
-              <Link
-                key={item.path}
-                to={item.path}
-                className={cn(
-                  "flex flex-col items-center justify-center text-gray-700 hover:text-blue-600 transition-colors w-full py-2",
-                  isActive ? "text-blue-500" : ""
-                )}
-              >
-                <Icon className="w-6 h-6" />
-                <span className="text-xs mt-1">{item.label}</span>
-              </Link>
-            );
-          })}
-        </nav>
-      </div>
-      <div className="flex-1 bg-white relative">
-        <div className="w-full">
-          <Outlet />
-        </div>
-      </div>
-    </div>
+      )}
+    </>
   );
 }
