@@ -515,7 +515,7 @@ export function ChatArea({
     <div className="flex-1 flex flex-col bg-white h-[95vh]">
       {/* Header */}
       {agentProfile && (
-        <div className="fixed border-gray-200 p-4 bg-white flex-shrink-0">
+        <div className="border-gray-200 p-4 bg-white flex-shrink-0 m-5">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center">
