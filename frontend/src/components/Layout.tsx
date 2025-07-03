@@ -1,4 +1,4 @@
-import { Outlet, useParams, useNavigate, Link, useLocation } from "react-router-dom";
+import { Outlet, useParams, useNavigate, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { ChevronLeft, ChevronRight, MessageCircle, Info, Settings } from "lucide-react";
 import { ChatLogicContext } from "@/hooks/ChatLogicContext";
@@ -50,22 +50,30 @@ export function Layout() {
               >
                 {navItems.map((item) => {
                   const Icon = item.icon;
-                  const isActive = location.pathname === item.path;
+                  const isChat = item.path === "/";
+                  const isActive = isChat
+                    ? location.pathname === "/" || location.pathname.startsWith("/projects")
+                    : location.pathname === item.path;
                   return (
-                    <Link
+                    <button
                       key={item.path}
-                      to={item.path}
+                      type="button"
+                      disabled={isActive}
+                      onClick={() => {
+                        if (!isActive) navigate(item.path);
+                      }}
                       className={cn(
                         "flex items-center text-gray-700 hover:text-blue-600 transition-colors w-full py-2",
                         sidebarVisible ? "gap-3" : "justify-center",
-                        isActive ? "text-blue-500" : ""
+                        isActive ? "text-blue-500 cursor-default" : "cursor-pointer"
                       )}
+                      style={{ background: "none", border: "none", outline: "none" }}
                     >
                       <Icon className="w-6 h-6" />
                       {sidebarVisible && (
                         <span className="text-base font-normal">{item.label}</span>
                       )}
-                    </Link>
+                    </button>
                   );
                 })}
               </nav>
@@ -123,18 +131,23 @@ export function Layout() {
                 const Icon = item.icon;
                 const isActive = location.pathname === item.path;
                 return (
-                  <Link
+                  <button
                     key={item.path}
-                    to={item.path}
+                    type="button"
+                    disabled={isActive}
+                    onClick={() => {
+                      if (!isActive) navigate(item.path);
+                    }}
                     className={cn(
                       "flex items-center text-gray-700 hover:text-blue-600 transition-colors w-full py-2",
                       sidebarVisible ? "gap-3" : "justify-center",
-                      isActive ? "text-blue-500" : ""
+                      isActive ? "text-blue-500 cursor-default" : "cursor-pointer"
                     )}
+                    style={{ background: "none", border: "none", outline: "none" }}
                   >
                     <Icon className="w-6 h-6" />
                     {sidebarVisible && <span className="text-base font-normal">{item.label}</span>}
-                  </Link>
+                  </button>
                 );
               })}
             </nav>
