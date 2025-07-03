@@ -533,8 +533,8 @@ export function ChatArea({
 
       {/* CHAT */}
 
-      <div className="flex-1 px-4 inset-0 overflow-y-auto" ref={messagesContainerRef}>
-        <div className="max-w-3xl mx-auto pt-3 pb-32">
+      <div className="flex-1 px-4 overflow-y-auto" ref={messagesContainerRef}>
+        <div className="max-w-3xl mx-auto py-16">
           {/* NO MESSAGES */}
 
           {messages.length === 0 && !currentStreamingMessage && agentProfile && (
