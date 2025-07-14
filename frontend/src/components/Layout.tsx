@@ -5,7 +5,8 @@ import { useChatLogic } from "@/hooks/useChatLogic";
 import { Sidebar } from "@/components/Sidebar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { UserInfo } from "@/components/UserInfo";
 
 export function Layout() {
   const { projectId } = useParams<{ projectId: string }>();
@@ -13,6 +14,29 @@ export function Layout() {
   const location = useLocation();
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
   const [sidebarVisible, setSidebarVisible] = useState(true);
+  const [currentUser, setCurrentUser] = useState<{
+    id: string;
+    name: string;
+    email: string;
+  } | null>(null);
+
+  // Load user info once on mount
+  useEffect(() => {
+    const fetchUser = async () => {
+      const userId = localStorage.getItem("chatbot_user_id");
+      if (!userId) return;
+      try {
+        const response = await fetch(`${apiBaseUrl}/users/${userId}`);
+        if (response.ok) {
+          const userData = await response.json();
+          setCurrentUser(userData);
+        }
+      } catch {
+        // Silently fail
+      }
+    };
+    fetchUser();
+  }, [apiBaseUrl]);
 
   // Navigation menu items
   const navItems = [
@@ -89,6 +113,10 @@ export function Layout() {
                   />
                 </ScrollArea>
               )}
+              {/* UserInfo fixed at the bottom of sidebar */}
+              <div className="absolute bottom-0 left-0 w-full border-t border-gray-200 bg-gray-100">
+                <UserInfo user={currentUser} />
+              </div>
             </div>
             {/* Main content area */}
             <div className="flex-1 bg-white relative">
@@ -151,6 +179,10 @@ export function Layout() {
                 );
               })}
             </nav>
+            {/* UserInfo fixed at the bottom of sidebar */}
+            <div className="absolute bottom-0 left-0 w-full p-4 border-t border-gray-200 bg-gray-100">
+              <UserInfo user={currentUser} />
+            </div>
           </div>
           <div className="flex-1 bg-white relative">
             <button

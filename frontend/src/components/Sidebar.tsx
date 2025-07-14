@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { MessageSquare, ChevronRight, ChevronDown } from "lucide-react";
-import { UserInfo } from "@/components/UserInfo";
 
 interface AgentProfile {
   id: string;
@@ -30,12 +29,6 @@ interface SidebarProps {
   refreshKey?: number; // Add this to force re-renders when conversations change
 }
 
-interface User {
-  id: string;
-  name: string;
-  email: string;
-}
-
 export function Sidebar({
   selectedConversationId,
   onConversationSelect,
@@ -47,7 +40,6 @@ export function Sidebar({
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [expandedProfiles, setExpandedProfiles] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   // Load expansion state from localStorage
   const getStorageKey = useCallback(
@@ -158,17 +150,6 @@ export function Sidebar({
     }
   }, [projectId, agentProfiles, loadExpandedState, saveExpandedState]);
 
-  // Load user info
-  useEffect(() => {
-    const userId = localStorage.getItem("chatbot_user_id");
-    if (!userId) return;
-    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
-    fetch(`${apiBaseUrl}/users/${userId}`)
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => setCurrentUser(data))
-      .catch(() => setCurrentUser(null));
-  }, []);
-
   const toggleProfileExpansion = (profileId: string) => {
     const newExpanded = new Set(expandedProfiles);
     if (newExpanded.has(profileId)) {
@@ -210,8 +191,6 @@ export function Sidebar({
 
   return (
     <div className="w-80 bg-gray-900 text-white border-r border-gray-700 flex flex-col h-full min-h-0 overflow-hidden">
-      {/* Current User Section */}
-      <UserInfo user={currentUser} />
       {/* Agent Profiles and Conversations */}
       <div className="mt-20 flex-1 min-h-0 p-4 overflow-x-hidden">
         <div className="space-y-2">
