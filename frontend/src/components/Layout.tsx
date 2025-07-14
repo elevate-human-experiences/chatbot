@@ -1,11 +1,11 @@
 import { Outlet, useParams, useNavigate, useLocation } from "react-router-dom";
-import { useState } from "react";
 import { ChevronLeft, ChevronRight, MessageCircle, Info, Settings } from "lucide-react";
 import { ChatLogicContext } from "@/hooks/ChatLogicContext";
 import { useChatLogic } from "@/hooks/useChatLogic";
 import { Sidebar } from "@/components/Sidebar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
 
 export function Layout() {
   const { projectId } = useParams<{ projectId: string }>();
