@@ -180,7 +180,7 @@ export function Layout() {
               })}
             </nav>
             {/* UserInfo fixed at the bottom of sidebar */}
-            <div className="absolute bottom-0 left-0 w-full p-4 border-t border-gray-200 bg-gray-100">
+            <div className="absolute bottom-0 left-0 w-full border-t border-gray-200 bg-gray-100">
               <UserInfo user={currentUser} />
             </div>
           </div>

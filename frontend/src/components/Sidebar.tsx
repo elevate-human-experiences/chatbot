@@ -192,7 +192,7 @@ export function Sidebar({
   return (
     <div className="w-80 bg-gray-900 text-white border-r border-gray-700 flex flex-col h-full min-h-0 overflow-hidden">
       {/* Agent Profiles and Conversations */}
-      <div className="mt-20 flex-1 min-h-0 p-4 overflow-x-hidden">
+      <div className="flex-1 min-h-0 p-4 overflow-x-hidden">
         <div className="space-y-2">
           {agentProfiles.length === 0 ? (
             <div className="text-center text-gray-400 text-sm py-8">No agent profiles found</div>
@@ -207,7 +207,7 @@ export function Sidebar({
                   <div className="flex items-center group">
                     <Button
                       variant="ghost"
-                      className="flex-1 justify-start text-left font-medium text-sm p-3 h-auto text-white hover:bg-gray-800 rounded-lg"
+                      className="flex-1 justify-start text-left font-medium text-sm h-auto text-white hover:bg-gray-800 rounded-lg"
                       onClick={() => {
                         toggleProfileExpansion(profile.id);
                         // Auto-start new conversation when clicking on agent profile
