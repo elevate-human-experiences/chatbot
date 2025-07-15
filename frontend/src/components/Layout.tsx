@@ -65,6 +65,10 @@ export function Layout() {
               className="flex flex-col bg-gray-100 border-r border-gray-200 transition-all duration-200"
               style={{ width: sidebarWidth, minWidth: collapsedSidebarWidth }}
             >
+              {/* Fixed top menu item: Claude Chat */}
+              <div className="sticky top-0 z-10 bg-gray-100 w-full px-4 py-3 flex items-center justify-start">
+                <span className="font-semibold text-lg text-blue-700">Claude Chat</span>
+              </div>
               {/* Navigation menu */}
               <nav
                 className={cn(
@@ -149,6 +153,10 @@ export function Layout() {
             className="flex flex-col bg-gray-100 border-r border-gray-200 transition-all duration-200"
             style={{ width: sidebarWidth, minWidth: collapsedSidebarWidth }}
           >
+            {/* Fixed top menu item: Claude Chat */}
+            <div className="sticky top-0 z-10 bg-gray-100 w-full px-4 py-3 flex items-center justify-start">
+              <span className="font-semibold text-lg text-blue-700">Claude Chat</span>
+            </div>
             <nav
               className={cn(
                 "flex flex-col h-full p-3 border-b border-gray-200",

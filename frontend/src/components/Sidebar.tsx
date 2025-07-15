@@ -183,14 +183,14 @@ export function Sidebar({
 
   if (loading) {
     return (
-      <div className="w-80 bg-gray-900 text-white border-r border-gray-700 p-4">
+      <div className="w-80 text-white border-r border-gray-700 p-4">
         <div className="text-center text-gray-400">Loading...</div>
       </div>
     );
   }
 
   return (
-    <div className="w-80 bg-gray-900 text-white border-r border-gray-700 flex flex-col h-full min-h-0 overflow-hidden">
+    <div className="w-80 text-white border-r border-gray-700 flex flex-col h-full min-h-0 overflow-hidden">
       {/* Agent Profiles and Conversations */}
       <div className="flex-1 min-h-0 p-4 overflow-x-hidden">
         <div className="space-y-2">
@@ -234,7 +234,7 @@ export function Sidebar({
 
                   {/* Conversations for this profile */}
                   {isExpanded && (
-                    <div className="ml-6 space-y-1">
+                    <div className="ml-0 space-y-1">
                       {profileConversations.length === 0 ? (
                         <div className="text-xs text-gray-500 py-2 px-3">No conversations yet</div>
                       ) : (
