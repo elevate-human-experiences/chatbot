@@ -127,7 +127,7 @@ export function Layout() {
               )}
               {/* UserInfo fixed at the bottom of sidebar */}
               <div className="absolute bottom-0 left-0 w-full border-t border-gray-200 bg-gray-100">
-                <UserInfo user={currentUser} />
+                <UserInfo user={currentUser} hideDetails={!sidebarVisible} />
               </div>
             </div>
             {/* Main content area */}
@@ -205,7 +205,7 @@ export function Layout() {
             </nav>
             {/* UserInfo fixed at the bottom of sidebar */}
             <div className="absolute bottom-0 left-0 w-full border-t border-gray-200 bg-gray-100">
-              <UserInfo user={currentUser} />
+              <UserInfo user={currentUser} hideDetails={!sidebarVisible} />
             </div>
           </div>
           <div className="flex-1 bg-white relative">
