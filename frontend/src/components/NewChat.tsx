@@ -16,7 +16,7 @@ interface SidebarProps {
   hideDetails?: boolean;
 }
 
-export function NewChat({ onNewConversation, projectId, refreshKey }: SidebarProps) {
+export function NewChat({ onNewConversation, projectId, refreshKey, hideDetails }: SidebarProps) {
   const [agentProfiles, setAgentProfiles] = useState<AgentProfile[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -74,8 +74,8 @@ export function NewChat({ onNewConversation, projectId, refreshKey }: SidebarPro
               className="w-[99%] bg-stone-200 text-stone-800 hover:bg-stone-300 font-medium px-4  transition-colors cursor-pointer flex items-center gap-2"
               onClick={() => onNewConversation(profile.id)}
             >
-              <Plus className="w-4 h-4 mr-1" />
-              New chat
+              {hideDetails && <Plus className="w-4 h-4 mr-1" />}
+              {!hideDetails && "New chat"}
             </Button>
           </div>
         ))
