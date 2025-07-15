@@ -69,7 +69,7 @@ export function Layout() {
               {/* Fixed top menu item: Claude Chat */}
               <div
                 className={cn(
-                  "sticky top-0 z-10 bg-gray-100 w-full px-4 py-6 flex items-center", // py-6 for more top/bottom padding
+                  "sticky top-0 z-10 bg-gray-100 w-full px-4 pt-6 pb-2 flex items-center", // py-6 for more top/bottom padding
                   sidebarVisible ? "justify-start" : "justify-center"
                 )}
               >
@@ -177,7 +177,7 @@ export function Layout() {
             {/* Fixed top menu item: Claude Chat */}
             <div
               className={cn(
-                "sticky top-0 z-10 bg-gray-100 w-full px-4 py-6 flex items-center", // py-6 for more top/bottom padding
+                "sticky top-0 z-10 bg-gray-100 w-full px-4 pt-6 pb-2 flex items-center", // py-6 for more top/bottom padding
                 sidebarVisible ? "justify-start" : "justify-center"
               )}
             >
