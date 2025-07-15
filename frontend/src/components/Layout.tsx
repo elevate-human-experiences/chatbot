@@ -3,6 +3,7 @@ import { Asterisk, ChevronLeft, ChevronRight, MessageCircle, Info, Settings } fr
 import { ChatLogicContext } from "@/hooks/ChatLogicContext";
 import { useChatLogic } from "@/hooks/useChatLogic";
 import { Sidebar } from "@/components/Sidebar";
+import { NewChat } from "@/components/NewChat";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
@@ -76,6 +77,11 @@ export function Layout() {
                 {sidebarVisible && (
                   <span className="font-semibold text-lg text-gray-700 ml-2">Claude Chat</span>
                 )}
+
+                <NewChat
+                  onNewConversation={chatLogic.handleNewConversation}
+                  projectId={projectId}
+                />
               </div>
               {/* Navigation menu */}
               <nav
