@@ -192,7 +192,7 @@ export function Sidebar({
   return (
     <div className="w-80 text-white border-r border-gray-700 flex flex-col h-full min-h-0 overflow-hidden">
       {/* Agent Profiles and Conversations */}
-      <div className="flex-1 min-h-0 p-4 overflow-x-hidden">
+      <div className="flex-1 min-h-0 overflow-x-hidden">
         <div className="space-y-2">
           {agentProfiles.length === 0 ? (
             <div className="text-center text-gray-400 text-sm py-8">No agent profiles found</div>
@@ -207,7 +207,7 @@ export function Sidebar({
                   <div className="flex items-center group">
                     <Button
                       variant="ghost"
-                      className="flex-1 justify-start text-left font-medium text-sm h-auto text-white hover:bg-gray-800 rounded-lg"
+                      className="flex-1 justify-start text-left font-medium text-sm h-auto text-white hover:bg-gray-300 rounded-none"
                       onClick={() => {
                         toggleProfileExpansion(profile.id);
                         // Auto-start new conversation when clicking on agent profile
@@ -221,7 +221,7 @@ export function Sidebar({
                           <ChevronRight className="w-4 h-4 text-gray-400" />
                         )}
                         <div className="min-w-0 flex-1">
-                          <div className="truncate text-white">{profile.name}</div>
+                          <div className="truncate text-gray-800">{profile.name}</div>
                           {profile.description && (
                             <div className="text-xs text-gray-400 truncate">
                               {profile.description}
@@ -236,22 +236,22 @@ export function Sidebar({
                   {isExpanded && (
                     <div className="ml-0 space-y-1">
                       {profileConversations.length === 0 ? (
-                        <div className="text-xs text-gray-500 py-2 px-3">No conversations yet</div>
+                        <div className="text-xs text-gray-500 py-2">No conversations yet</div>
                       ) : (
                         profileConversations.map((conversation) => (
                           <Button
                             key={conversation.id}
                             variant="ghost"
                             className={cn(
-                              "w-full justify-start text-left text-sm p-3 h-auto rounded-lg group",
+                              "w-full justify-start text-left text-sm h-auto group",
                               selectedConversationId === conversation.id
-                                ? "bg-gray-800 text-white"
-                                : "text-gray-300 hover:bg-gray-800 hover:text-white"
+                                ? "bg-gray-300 text-gray-700 rounded-none"
+                                : "text-gray-700 hover:bg-gray-300 rounded-none"
                             )}
                             onClick={() => onConversationSelect(conversation.id)}
                           >
-                            <div className="flex items-center space-x-2 min-w-0 flex-1">
-                              <MessageSquare className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                            <div className="flex items-center space-x-1 min-w-0 flex-1">
+                              {/* <MessageSquare className="w-4 h-4 text-gray-400 flex-shrink-0" /> */}
                               <div className="min-w-0 flex-1">
                                 <div className="truncate">{getConversationTitle(conversation)}</div>
                                 <div className="text-xs text-gray-500">

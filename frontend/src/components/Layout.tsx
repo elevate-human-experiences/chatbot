@@ -115,7 +115,7 @@ export function Layout() {
               </nav>
               {/* Sidebar (conversaciones, perfiles, etc) solo si expandido */}
               {showChat && sidebarVisible && (
-                <ScrollArea className="flex-1 min-h-0 h-0 bg-gray-900 overflow-hidden">
+                <ScrollArea className="flex-1 min-h-0 h-0 overflow-hidden">
                   <Sidebar
                     selectedConversationId={chatLogic.selectedConversationId}
                     onConversationSelect={chatLogic.handleConversationSelect}
