@@ -205,10 +205,10 @@ export function Sidebar({
               return (
                 <div key={profile.id} className="space-y-1">
                   {/* Agent Profile Header */}
-                  <div className="flex items-center group">
+                  <div className="flex items-start group flex-col">
                     <Button
                       variant="ghost"
-                      className="flex-1 justify-start text-left font-medium text-sm h-auto text-white hover:bg-gray-300 rounded-none"
+                      className="w-full flex-1 justify-start text-left font-medium text-sm h-auto text-white hover:bg-gray-300 rounded-none"
                       onClick={() => {
                         toggleProfileExpansion(profile.id);
                         // Auto-start new conversation when clicking on agent profile
