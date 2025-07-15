@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { MessageSquare, ChevronRight, ChevronDown } from "lucide-react";
+import "@/assets/truncate-gradient-text.css";
 
 interface AgentProfile {
   id: string;
@@ -190,7 +191,7 @@ export function Sidebar({
   }
 
   return (
-    <div className="w-80 text-white border-r border-gray-700 flex flex-col h-full min-h-0 overflow-hidden">
+    <div className="text-white border-r border-gray-700 flex flex-col h-full min-h-0 overflow-hidden">
       {/* Agent Profiles and Conversations */}
       <div className="flex-1 min-h-0 overflow-x-hidden">
         <div className="space-y-2">
@@ -243,7 +244,7 @@ export function Sidebar({
                             key={conversation.id}
                             variant="ghost"
                             className={cn(
-                              "w-full justify-start text-left text-sm h-auto group",
+                              "w-[279px] justify-start text-left text-sm h-auto group",
                               selectedConversationId === conversation.id
                                 ? "bg-gray-300 text-gray-700 rounded-none"
                                 : "text-gray-700 hover:bg-gray-300 rounded-none"
@@ -253,7 +254,16 @@ export function Sidebar({
                             <div className="flex items-center space-x-1 min-w-0 flex-1">
                               {/* <MessageSquare className="w-4 h-4 text-gray-400 flex-shrink-0" /> */}
                               <div className="min-w-0 flex-1">
-                                <div className="truncate">{getConversationTitle(conversation)}</div>
+                                <div
+                                  className="truncate truncate-gradient-text"
+                                  style={{
+                                    WebkitBackgroundClip: "text",
+                                    WebkitTextFillColor: "transparent",
+                                    backgroundClip: "text",
+                                  }}
+                                >
+                                  {getConversationTitle(conversation)}
+                                </div>
                                 <div className="text-xs text-gray-500">
                                   {new Date(conversation.started_at).toLocaleDateString()}
                                 </div>

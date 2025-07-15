@@ -72,9 +72,9 @@ export function Layout() {
                   sidebarVisible ? "justify-start" : "justify-center"
                 )}
               >
-                <Asterisk className="w-5 h-5 text-blue-700" />
+                <Asterisk className="w-5 h-5 text-gray-700" />
                 {sidebarVisible && (
-                  <span className="font-semibold text-lg text-blue-700 ml-2">Claude Chat</span>
+                  <span className="font-semibold text-lg text-gray-700 ml-2">Claude Chat</span>
                 )}
               </div>
               {/* Navigation menu */}
@@ -99,15 +99,22 @@ export function Layout() {
                         if (!isActive) navigate(item.path);
                       }}
                       className={cn(
-                        "flex items-center text-gray-700 hover:text-blue-600 transition-colors w-full py-2",
+                        "flex items-center text-stone-500 hover:text-pink-700 transition-colors w-full py-2 cursor-pointer",
                         sidebarVisible ? "gap-3" : "justify-center",
-                        isActive ? "text-blue-500 cursor-default" : "cursor-pointer"
+                        isActive ? "text-stone-700 font-bold" : ""
                       )}
                       style={{ background: "none", border: "none", outline: "none" }}
                     >
                       <Icon className="w-6 h-6" />
                       {sidebarVisible && (
-                        <span className="text-base font-normal">{item.label}</span>
+                        <span
+                          className={cn(
+                            "text-base font-normal",
+                            isActive && "font-bold text-stone-700"
+                          )}
+                        >
+                          {item.label}
+                        </span>
                       )}
                     </button>
                   );
@@ -168,9 +175,9 @@ export function Layout() {
                 sidebarVisible ? "justify-start" : "justify-center"
               )}
             >
-              <Asterisk className="w-5 h-5 text-blue-700" />
+              <Asterisk className="w-5 h-5 text-gray-700" />
               {sidebarVisible && (
-                <span className="font-semibold text-lg text-blue-700 ml-2">Claude Chat</span>
+                <span className="font-semibold text-lg text-gray-700 ml-2">Claude Chat</span>
               )}
             </div>
             <nav
@@ -191,14 +198,23 @@ export function Layout() {
                       if (!isActive) navigate(item.path);
                     }}
                     className={cn(
-                      "flex items-center text-gray-700 hover:text-blue-600 transition-colors w-full py-2",
+                      "flex items-center text-stone-500 hover:text-pink-700 transition-colors w-full py-2 cursor-pointer",
                       sidebarVisible ? "gap-3" : "justify-center",
-                      isActive ? "text-blue-500 cursor-default" : "cursor-pointer"
+                      isActive ? "text-stone-700 font-bold" : ""
                     )}
                     style={{ background: "none", border: "none", outline: "none" }}
                   >
                     <Icon className="w-6 h-6" />
-                    {sidebarVisible && <span className="text-base font-normal">{item.label}</span>}
+                    {sidebarVisible && (
+                      <span
+                        className={cn(
+                          "text-base font-normal",
+                          isActive && "font-bold text-stone-700"
+                        )}
+                      >
+                        {item.label}
+                      </span>
+                    )}
                   </button>
                 );
               })}
