@@ -73,7 +73,7 @@ export function Layout() {
                   sidebarVisible ? "justify-start" : "justify-center"
                 )}
               >
-                <Asterisk className="w-5 h-5 text-gray-700" />
+                <Asterisk className="w-4 h-4 text-gray-700" />
                 {sidebarVisible && (
                   <span className="font-semibold text-lg text-gray-700 ml-2">Claude Chat</span>
                 )}
@@ -106,7 +106,7 @@ export function Layout() {
                       )}
                       style={{ background: "none", border: "none", outline: "none" }}
                     >
-                      <Icon className={cn("w-6 h-6", isActive ? "text-stone-700" : "")} />
+                      <Icon className={cn("w-4 h-4", isActive ? "text-stone-700" : "")} />
                       {sidebarVisible && (
                         <span
                           className={cn(
@@ -156,9 +156,9 @@ export function Layout() {
                 aria-label={sidebarVisible ? "Ocultar menú" : "Mostrar menú"}
               >
                 {sidebarVisible ? (
-                  <ChevronLeft className="w-5 h-5" />
+                  <ChevronLeft className="w-4 h-4" />
                 ) : (
-                  <ChevronRight className="w-5 h-5" />
+                  <ChevronRight className="w-4 h-4" />
                 )}
               </button>
               <div className="h-full w-full">
@@ -181,7 +181,7 @@ export function Layout() {
                 sidebarVisible ? "justify-start" : "justify-center"
               )}
             >
-              <Asterisk className="w-5 h-5 text-gray-700" />
+              <Asterisk className="w-4 h-4 text-gray-700" />
               {sidebarVisible && (
                 <span className="font-semibold text-lg text-gray-700 ml-2">Claude Chat</span>
               )}
@@ -210,7 +210,7 @@ export function Layout() {
                     )}
                     style={{ background: "none", border: "none", outline: "none" }}
                   >
-                    <Icon className={cn("w-6 h-6", isActive ? "text-stone-700" : "")} />
+                    <Icon className={cn("w-4 h-4", isActive ? "text-stone-700" : "")} />
                     {sidebarVisible && (
                       <span
                         className={cn(
@@ -242,9 +242,9 @@ export function Layout() {
               aria-label={sidebarVisible ? "Ocultar menú" : "Mostrar menú"}
             >
               {sidebarVisible ? (
-                <ChevronLeft className="w-5 h-5" />
+                <ChevronLeft className="w-4 h-4" />
               ) : (
-                <ChevronRight className="w-5 h-5" />
+                <ChevronRight className="w-4 h-4" />
               )}
             </button>
             <div className="h-full w-full">
