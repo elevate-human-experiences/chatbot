@@ -1,5 +1,5 @@
 import { Outlet, useParams, useNavigate, useLocation } from "react-router-dom";
-import { ChevronLeft, ChevronRight, MessageCircle, Info, Settings } from "lucide-react";
+import { Asterisk, ChevronLeft, ChevronRight, MessageCircle, Info, Settings } from "lucide-react";
 import { ChatLogicContext } from "@/hooks/ChatLogicContext";
 import { useChatLogic } from "@/hooks/useChatLogic";
 import { Sidebar } from "@/components/Sidebar";
@@ -66,8 +66,16 @@ export function Layout() {
               style={{ width: sidebarWidth, minWidth: collapsedSidebarWidth }}
             >
               {/* Fixed top menu item: Claude Chat */}
-              <div className="sticky top-0 z-10 bg-gray-100 w-full px-4 py-3 flex items-center justify-start">
-                <span className="font-semibold text-lg text-blue-700">Claude Chat</span>
+              <div
+                className={cn(
+                  "sticky top-0 z-10 bg-gray-100 w-full px-4 py-6 flex items-center", // py-6 for more top/bottom padding
+                  sidebarVisible ? "justify-start" : "justify-center"
+                )}
+              >
+                <Asterisk className="w-5 h-5 text-blue-700" />
+                {sidebarVisible && (
+                  <span className="font-semibold text-lg text-blue-700 ml-2">Claude Chat</span>
+                )}
               </div>
               {/* Navigation menu */}
               <nav
@@ -154,8 +162,16 @@ export function Layout() {
             style={{ width: sidebarWidth, minWidth: collapsedSidebarWidth }}
           >
             {/* Fixed top menu item: Claude Chat */}
-            <div className="sticky top-0 z-10 bg-gray-100 w-full px-4 py-3 flex items-center justify-start">
-              <span className="font-semibold text-lg text-blue-700">Claude Chat</span>
+            <div
+              className={cn(
+                "sticky top-0 z-10 bg-gray-100 w-full px-4 py-6 flex items-center", // py-6 for more top/bottom padding
+                sidebarVisible ? "justify-start" : "justify-center"
+              )}
+            >
+              <Asterisk className="w-5 h-5 text-blue-700" />
+              {sidebarVisible && (
+                <span className="font-semibold text-lg text-blue-700 ml-2">Claude Chat</span>
+              )}
             </div>
             <nav
               className={cn(
