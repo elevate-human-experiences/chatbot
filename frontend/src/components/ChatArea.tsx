@@ -517,7 +517,7 @@ export function ChatArea({
         <div className="fixed border-gray-200 p-4 bg-white flex-shrink-0 m-5">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center">
+              <div className="w-8 h-8 bg-stone-600 rounded-full flex items-center justify-center">
                 <Bot className="w-5 h-5 text-white" />
               </div>
               <div>
@@ -534,14 +534,14 @@ export function ChatArea({
       {/* CHAT */}
 
       <div className="flex-1 px-4 overflow-y-auto" ref={messagesContainerRef}>
-        <div className="max-w-3xl mx-auto py-16">
+        <div className="max-w-3xl mx-auto pt-16 pb-30">
           {/* NO MESSAGES */}
 
           {messages.length === 0 && !currentStreamingMessage && agentProfile && (
             <div className="flex items-center justify-center min-h-[65vh]">
               <div className="text-center w-full">
-                <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Bot className="w-8 h-8 text-purple-600" />
+                <div className="w-16 h-16 bg-stone-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Bot className="w-8 h-8 text-stone-600" />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">
                   Chat with {agentProfile.name}
@@ -576,17 +576,17 @@ export function ChatArea({
               <div key={message.id} className="flex space-x-3">
                 <div className="flex-shrink-0">
                   {message.role === "user" ? (
-                    <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+                    <div className="w-8 h-8 bg-stone-600 rounded-full flex items-center justify-center">
                       <UserIcon className="w-5 h-5 text-white" />
                     </div>
                   ) : (
-                    <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center">
-                      <Bot className="w-5 h-5 text-white" />
+                    <div className="w-8 h-8 bg-stone-300 rounded-full flex items-center justify-center">
+                      <Bot className="w-5 h-5 text-stone-700" />
                     </div>
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="bg-gray-0 rounded-lg p-4">
                     {message.reasoning && (
                       <div className="mb-4 text-sm">
                         <button
@@ -626,7 +626,7 @@ export function ChatArea({
             {currentStreamingMessage && (
               <div className="flex space-x-3">
                 <div className="flex-shrink-0">
-                  <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center">
+                  <div className="w-8 h-8 bg-stone-600 rounded-full flex items-center justify-center">
                     <Bot className="w-5 h-5 text-white" />
                   </div>
                 </div>
@@ -651,7 +651,7 @@ export function ChatArea({
                           <span>💭 thinking in progress...</span>
                         </button>
                         {expandedReasoning["streaming"] && (
-                          <div className="mt-2 p-3 bg-blue-50 rounded border-l-4 border-blue-200">
+                          <div className="mt-2 p-3 bg-blue-50 rounded border-l-4 border-stone-200">
                             <div className="whitespace-pre-wrap text-gray-700">
                               {currentStreamingMessage.reasoning}
                               <span className="inline-block w-2 h-4 bg-blue-400 ml-1 animate-pulse"></span>
@@ -675,8 +675,8 @@ export function ChatArea({
 
           {/* Text Area input */}
 
-          <div className="z-10 flex justify-center fixed bottom-0 w-3xl mx-auto">
-            <div className="p-5 bg-white rounded-t-lg w-3xl">
+          <div className="z-10 flex justify-center fixed bottom-5 w-3xl mx-auto">
+            <div className="p-5 bg-stone-50 rounded-lg w-3xl">
               <div className="flex items-end space-x-3">
                 <div className="flex-1 relative">
                   <Textarea
@@ -686,7 +686,7 @@ export function ChatArea({
                     onKeyPress={handleKeyPress}
                     placeholder={getPlaceholder()}
                     disabled={isLoading || !agentProfileId}
-                    className="min-h-[52px] max-h-[120px] resize-none border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-lg pr-12 w-full"
+                    className="min-h-[52px] max-h-[120px] resize-none border-gray-300 focus:border-stone-500 focus:ring-stone-500 rounded-lg pr-12 w-full"
                     rows={1}
                   />
                   <div className="absolute right-3 bottom-3">
@@ -695,7 +695,7 @@ export function ChatArea({
                         size="sm"
                         variant="ghost"
                         onClick={stopGeneration}
-                        className="h-8 w-8 p-0 text-gray-500 hover:text-red-600"
+                        className="h-8 w-8 p-0 text-gray-500 hover:text-red-600 cursor-pointer"
                       >
                         <Square className="w-4 h-4" />
                       </Button>
@@ -705,9 +705,9 @@ export function ChatArea({
                         variant="ghost"
                         onClick={sendMessage}
                         disabled={!input.trim() || !agentProfileId}
-                        className="h-8 w-8 p-0 text-gray-500 hover:text-blue-600 disabled:text-gray-300"
+                        className="h-8 w-8 p-0 text-gray-500 hover:text-stone-600 disabled:text-gray-300 cursor-pointer"
                       >
-                        <Send className="w-4 h-4" />
+                        <Send className="w-4 h-4 text-stone-500" />
                       </Button>
                     )}
                   </div>
@@ -728,7 +728,7 @@ export function ChatArea({
           }`}
         >
           <button
-            className="bg-gray-400 hover:bg-gray-500 text-white rounded-full w-9 h-9 flex items-center justify-center transition-all duration-300"
+            className="bg-stone-400 hover:bg-stone-500 text-white rounded-full w-9 h-9 flex items-center justify-center transition-all duration-300 cursor-pointer"
             type="button"
             onClick={handleScrollTop}
             aria-label="Scroll to top"
