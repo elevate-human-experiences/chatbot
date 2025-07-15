@@ -40,7 +40,7 @@ export function Layout() {
 
   // Navigation menu items
   const navItems = [
-    { path: "/", label: "Chat", icon: MessageCircle },
+    { path: "/", label: "Chats", icon: MessageCircle },
     { path: "/about", label: "About", icon: Info },
     { path: "/settings", label: "Settings", icon: Settings },
   ];
@@ -105,7 +105,7 @@ export function Layout() {
                       )}
                       style={{ background: "none", border: "none", outline: "none" }}
                     >
-                      <Icon className="w-6 h-6" />
+                      <Icon className={cn("w-6 h-6", isActive ? "text-stone-700" : "")} />
                       {sidebarVisible && (
                         <span
                           className={cn(
@@ -200,11 +200,11 @@ export function Layout() {
                     className={cn(
                       "flex items-center text-stone-500 hover:text-pink-700 transition-colors w-full py-2 cursor-pointer",
                       sidebarVisible ? "gap-3" : "justify-center",
-                      isActive ? "text-stone-700 font-bold" : ""
+                      isActive ? "text-stone-700 font-bold " : ""
                     )}
                     style={{ background: "none", border: "none", outline: "none" }}
                   >
-                    <Icon className="w-6 h-6" />
+                    <Icon className={cn("w-6 h-6", isActive ? "text-stone-700" : "")} />
                     {sidebarVisible && (
                       <span
                         className={cn(
