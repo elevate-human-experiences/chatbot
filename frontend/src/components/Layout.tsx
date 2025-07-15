@@ -77,16 +77,11 @@ export function Layout() {
                 {sidebarVisible && (
                   <span className="font-semibold text-lg text-gray-700 ml-2">Claude Chat</span>
                 )}
-
-                <NewChat
-                  onNewConversation={chatLogic.handleNewConversation}
-                  projectId={projectId}
-                />
               </div>
               {/* Navigation menu */}
               <nav
                 className={cn(
-                  "flex flex-col h-auto p-3 gap-2 border-b border-gray-200",
+                  "flex flex-col h-auto p-3 gap-2",
                   sidebarVisible ? "items-start gap-8" : "items-center gap-4"
                 )}
               >
@@ -105,7 +100,7 @@ export function Layout() {
                         if (!isActive) navigate(item.path);
                       }}
                       className={cn(
-                        "flex items-center text-stone-500 hover:text-pink-700 transition-colors w-full py-2 cursor-pointer",
+                        "flex items-center text-stone-500 hover:bg-stone-200 transition-colors w-full py-2 cursor-pointer",
                         sidebarVisible ? "gap-3" : "justify-center",
                         isActive ? "text-stone-700 font-bold" : ""
                       )}
@@ -126,9 +121,14 @@ export function Layout() {
                   );
                 })}
               </nav>
+              <NewChat
+                onNewConversation={chatLogic.handleNewConversation}
+                projectId={projectId}
+                hideDetails={!sidebarVisible}
+              />
               {/* Sidebar (conversaciones, perfiles, etc) solo si expandido */}
               {showChat && sidebarVisible && (
-                <ScrollArea className="flex-1 min-h-0 h-0 overflow-hidden">
+                <ScrollArea className="flex-1 min-h-0 h-0 overflow-hidden mt-3">
                   <Sidebar
                     selectedConversationId={chatLogic.selectedConversationId}
                     onConversationSelect={chatLogic.handleConversationSelect}
@@ -204,7 +204,7 @@ export function Layout() {
                       if (!isActive) navigate(item.path);
                     }}
                     className={cn(
-                      "flex items-center text-stone-500 hover:text-pink-700 transition-colors w-full py-2 cursor-pointer",
+                      "flex items-center text-stone-500 hover:bg-stone-200 transition-colors w-full py-2 cursor-pointer",
                       sidebarVisible ? "gap-3" : "justify-center",
                       isActive ? "text-stone-700 font-bold " : ""
                     )}

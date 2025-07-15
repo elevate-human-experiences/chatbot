@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 
 interface AgentProfile {
   id: string;
@@ -12,6 +13,7 @@ interface SidebarProps {
   onNewConversation: (agentProfileId: string) => void;
   projectId?: string;
   refreshKey?: number;
+  hideDetails?: boolean;
 }
 
 export function NewChat({ onNewConversation, projectId, refreshKey }: SidebarProps) {
@@ -67,13 +69,13 @@ export function NewChat({ onNewConversation, projectId, refreshKey }: SidebarPro
         <div className="text-center text-gray-400 text-sm">No agent profiles found</div>
       ) : (
         agentProfiles.map((profile) => (
-          <div key={profile.id}>
+          <div key={profile.id} className="w-full flex items-center justify-center p-2">
             <Button
-              variant="ghost"
-              className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-medium rounded-md px-4 py-2 transition-colors"
+              className="w-[99%] bg-stone-200 text-stone-800 hover:bg-stone-300 font-medium px-4  transition-colors cursor-pointer flex items-center gap-2"
               onClick={() => onNewConversation(profile.id)}
             >
-              new chat
+              <Plus className="w-4 h-4 mr-1" />
+              New chat
             </Button>
           </div>
         ))

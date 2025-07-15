@@ -208,7 +208,7 @@ export function Sidebar({
                   <div className="flex items-start group flex-col">
                     <Button
                       variant="ghost"
-                      className="w-full flex-1 justify-start text-left font-medium text-sm h-auto text-white hover:bg-gray-300 rounded-none"
+                      className="w-full flex-1 justify-start text-left font-medium text-sm h-auto text-white hover:bg-stone-200 rounded-none"
                       onClick={() => {
                         toggleProfileExpansion(profile.id);
                         // Auto-start new conversation when clicking on agent profile
@@ -246,8 +246,8 @@ export function Sidebar({
                             className={cn(
                               "w-[279px] justify-start text-left text-sm h-auto group",
                               selectedConversationId === conversation.id
-                                ? "bg-gray-300 text-gray-700 rounded-none"
-                                : "text-gray-700 hover:bg-gray-300 rounded-none"
+                                ? "bg-stone-200 text-gray-700 rounded-none"
+                                : "text-gray-700 hover:bg-stone-200 rounded-none"
                             )}
                             onClick={() => onConversationSelect(conversation.id)}
                           >
