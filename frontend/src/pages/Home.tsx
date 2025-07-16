@@ -194,10 +194,10 @@ export function Home() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <Card className="w-[400px]">
+        <Card className="w-[400px] border-neutral-50 bg-stone-50">
           <CardContent className="p-6">
             <div className="text-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-stone-600 mx-auto mb-4"></div>
               <p className="text-gray-600">Initializing...</p>
             </div>
           </CardContent>
@@ -209,7 +209,7 @@ export function Home() {
   if (showCreateUser) {
     return (
       <div className="flex items-center justify-center h-screen bg-gray-50">
-        <Card className="w-[400px]">
+        <Card className="w-[400px] border-neutral-50 bg-stone-50">
           <CardHeader>
             <CardTitle>Welcome to ChatBot</CardTitle>
             <p className="text-sm text-gray-600">Let's get you set up with an account</p>
@@ -260,7 +260,7 @@ export function Home() {
 
   return (
     <div className="flex items-center justify-center h-screen bg-gray-50">
-      <Card className="w-[500px]">
+      <Card className="w-[500px] border-neutral-50 bg-stone-50">
         <CardHeader>
           <CardTitle>Welcome back, {user?.name}!</CardTitle>
           <p className="text-sm text-gray-600">We're setting up your workspace...</p>
@@ -287,7 +287,7 @@ export function Home() {
           <div className="flex gap-2">
             <Button
               onClick={() => user && loadUserData(user.id)}
-              className="flex-1"
+              className="flex-1 bg-stone-500 hover:bg-stone-600 text-white"
               disabled={!user}
             >
               Continue to Chat
