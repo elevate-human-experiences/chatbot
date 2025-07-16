@@ -6,7 +6,7 @@ export function About() {
   return (
     <div className="flex items-center justify-center h-screen">
       <div className="flex-1 flex flex-col max-w-4xl mx-auto p-4">
-        <Card className="flex-1">
+        <Card className="flex-1 border-neutral-50 bg-stone-50">
           <CardHeader>
             <CardTitle className="text-center">About Claude Reasoning Chat</CardTitle>
           </CardHeader>
@@ -54,7 +54,7 @@ export function About() {
             </div>
 
             <div className="flex justify-center pt-6">
-              <Button asChild>
+              <Button asChild className="bg-stone-500 hover:bg-stone-600 text-white">
                 <Link to="/">Start Chatting</Link>
               </Button>
             </div>

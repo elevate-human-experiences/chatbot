@@ -6,7 +6,7 @@ export function Settings() {
   return (
     <div className="flex items-center justify-center h-screen">
       <div className="flex-1 flex flex-col max-w-4xl mx-auto p-4">
-        <Card className="flex-1">
+        <Card className="flex-1 border-neutral-50 bg-stone-50">
           <CardHeader>
             <CardTitle className="text-center">Settings</CardTitle>
             <p className="text-center text-sm text-gray-600">Configure your chat preferences</p>
@@ -18,7 +18,7 @@ export function Settings() {
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <label className="text-sm font-medium">Model</label>
-                    <select className="border rounded px-3 py-1 text-sm">
+                    <select className="border border-stone-300 rounded px-3 py-1 text-sm focus:border-stone-300 focus:ring-stone-300 focus:outline-none">
                       <option>anthropic/claude-sonnet-4-20250514</option>
                       <option>gpt-4o</option>
                       <option>gpt-4o-mini</option>
@@ -32,12 +32,12 @@ export function Settings() {
                       max="2"
                       step="0.1"
                       defaultValue="1.0"
-                      className="w-32"
+                      className="w-32 border border-stone-300 focus:border-stone-300 focus:ring-stone-300 focus:outline-none accent-stone-300"
                     />
                   </div>
                   <div className="flex items-center justify-between">
                     <label className="text-sm font-medium">Reasoning Effort</label>
-                    <select className="border rounded px-3 py-1 text-sm">
+                    <select className="border border-stone-300 rounded px-3 py-1 text-sm focus:border-stone-300 focus:ring-stone-300 focus:outline-none">
                       <option>low</option>
                       <option selected>medium</option>
                       <option>high</option>
@@ -51,15 +51,27 @@ export function Settings() {
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <label className="text-sm font-medium">Show Thinking Process</label>
-                    <input type="checkbox" defaultChecked className="rounded" />
+                    <input
+                      type="checkbox"
+                      defaultChecked
+                      className="rounded border-stone-300 focus:border-stone-300 focus:ring-stone-300 focus:outline-none accent-stone-300"
+                    />
                   </div>
                   <div className="flex items-center justify-between">
                     <label className="text-sm font-medium">Show Reasoning</label>
-                    <input type="checkbox" defaultChecked className="rounded" />
+                    <input
+                      type="checkbox"
+                      defaultChecked
+                      className="rounded border-stone-300 focus:border-stone-300 focus:ring-stone-300 focus:outline-none accent-stone-300"
+                    />
                   </div>
                   <div className="flex items-center justify-between">
                     <label className="text-sm font-medium">Auto-scroll</label>
-                    <input type="checkbox" defaultChecked className="rounded" />
+                    <input
+                      type="checkbox"
+                      defaultChecked
+                      className="rounded border-stone-300 focus:border-stone-300 focus:ring-stone-300 focus:outline-none accent-stone-300"
+                    />
                   </div>
                 </div>
               </div>
@@ -69,7 +81,9 @@ export function Settings() {
               <Button variant="outline" asChild>
                 <Link to="/">Back to Chat</Link>
               </Button>
-              <Button>Save Settings</Button>
+              <Button className="bg-stone-500 hover:bg-stone-600 text-white cursor-pointer">
+                Save Settings
+              </Button>
             </div>
           </CardContent>
         </Card>
