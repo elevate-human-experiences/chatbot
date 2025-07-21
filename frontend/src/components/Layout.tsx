@@ -63,19 +63,19 @@ export function Layout() {
           <div className="flex h-screen">
             {/* Sidebar + Navigation */}
             <div
-              className="flex flex-col bg-gray-100 border-r border-gray-200 transition-all duration-200"
+              className="flex flex-col bg-background border-r border-border transition-all duration-200"
               style={{ width: sidebarWidth, minWidth: collapsedSidebarWidth }}
             >
               {/* Fixed top menu item: Claude Chat */}
               <div
                 className={cn(
-                  "sticky top-0 z-10 bg-gray-100 w-full px-4 pt-6 pb-2 flex items-center", // py-6 for more top/bottom padding
+                  "sticky top-0 z-10 bg-background w-full px-4 pt-6 pb-2 flex items-center",
                   sidebarVisible ? "justify-start" : "justify-center"
                 )}
               >
-                <Asterisk className="w-4 h-4 text-gray-700" />
+                <Asterisk className="w-4 h-4 text-primary" />
                 {sidebarVisible && (
-                  <span className="font-semibold text-lg text-gray-700 ml-2">Claude Chat</span>
+                  <span className="font-semibold text-lg text-primary ml-2">Claude Chat</span>
                 )}
               </div>
               {/* Navigation menu */}
@@ -100,18 +100,18 @@ export function Layout() {
                         if (!isActive) navigate(item.path);
                       }}
                       className={cn(
-                        "flex items-center text-stone-500 hover:bg-stone-200 transition-colors w-full py-2 cursor-pointer",
+                        "flex items-center text-primary hover:bg-accent transition-colors w-full py-2 cursor-pointer",
                         sidebarVisible ? "gap-3" : "justify-center",
-                        isActive ? "text-stone-700 font-bold" : ""
+                        isActive ? "text-primary font-bold" : ""
                       )}
                       style={{ background: "none", border: "none", outline: "none" }}
                     >
-                      <Icon className={cn("w-4 h-4", isActive ? "text-stone-700" : "")} />
+                      <Icon className={cn("w-4 h-4", isActive ? "text-primary" : "")} />
                       {sidebarVisible && (
                         <span
                           className={cn(
                             "text-base font-normal",
-                            isActive && "font-bold text-stone-700"
+                            isActive && "font-bold text-primary"
                           )}
                         >
                           {item.label}
@@ -139,15 +139,15 @@ export function Layout() {
                 </ScrollArea>
               )}
               {/* UserInfo fixed at the bottom of sidebar */}
-              <div className="absolute bottom-0 left-0 w-full border-t border-gray-200 bg-gray-100">
+              <div className="absolute bottom-0 left-0 w-full border-t border-border bg-background">
                 <UserInfo user={currentUser} hideDetails={!sidebarVisible} />
               </div>
             </div>
             {/* Main content area */}
-            <div className="flex-1 bg-white relative">
+            <div className="flex-1 bg-background relative">
               <button
                 onClick={() => setSidebarVisible((v) => !v)}
-                className="fixed top-4 z-30 bg-white border border-gray-300 rounded-full shadow p-1 hover:bg-gray-50 transition"
+                className="fixed top-4 z-30 bg-background border border-border rounded-full shadow p-1 hover:bg-accent transition"
                 style={{
                   left: sidebarWidth,
                   transform: "translateX(-50%)",
@@ -171,24 +171,24 @@ export function Layout() {
         // Layout base sin projectId, pero con botón de mostrar/ocultar sidebar
         <div className="flex h-screen">
           <div
-            className="flex flex-col bg-gray-100 border-r border-gray-200 transition-all duration-200"
+            className="flex flex-col bg-background border-r border-border transition-all duration-200"
             style={{ width: sidebarWidth, minWidth: collapsedSidebarWidth }}
           >
             {/* Fixed top menu item: Claude Chat */}
             <div
               className={cn(
-                "sticky top-0 z-10 bg-gray-100 w-full px-4 pt-6 pb-2 flex items-center", // py-6 for more top/bottom padding
+                "sticky top-0 z-10 bg-background w-full px-4 pt-6 pb-2 flex items-center",
                 sidebarVisible ? "justify-start" : "justify-center"
               )}
             >
-              <Asterisk className="w-4 h-4 text-gray-700" />
+              <Asterisk className="w-4 h-4 text-primary" />
               {sidebarVisible && (
-                <span className="font-semibold text-lg text-gray-700 ml-2">Claude Chat</span>
+                <span className="font-semibold text-lg text-primary ml-2">Claude Chat</span>
               )}
             </div>
             <nav
               className={cn(
-                "flex flex-col h-full p-3 border-b border-gray-200",
+                "flex flex-col h-full p-3 border-b border-border",
                 sidebarVisible ? "items-start gap-8" : "items-center gap-4"
               )}
             >
@@ -204,18 +204,18 @@ export function Layout() {
                       if (!isActive) navigate(item.path);
                     }}
                     className={cn(
-                      "flex items-center text-stone-500 hover:bg-stone-200 transition-colors w-full py-2 cursor-pointer",
+                      "flex items-center text-primary hover:bg-accent transition-colors w-full py-2 cursor-pointer",
                       sidebarVisible ? "gap-3" : "justify-center",
-                      isActive ? "text-stone-700 font-bold " : ""
+                      isActive ? "text-primary font-bold " : ""
                     )}
                     style={{ background: "none", border: "none", outline: "none" }}
                   >
-                    <Icon className={cn("w-4 h-4", isActive ? "text-stone-700" : "")} />
+                    <Icon className={cn("w-4 h-4", isActive ? "text-primary" : "")} />
                     {sidebarVisible && (
                       <span
                         className={cn(
                           "text-base font-normal",
-                          isActive && "font-bold text-stone-700"
+                          isActive && "font-bold text-primary"
                         )}
                       >
                         {item.label}
@@ -226,14 +226,14 @@ export function Layout() {
               })}
             </nav>
             {/* UserInfo fixed at the bottom of sidebar */}
-            <div className="absolute bottom-0 left-0 w-full border-t border-gray-200 bg-gray-100">
+            <div className="absolute bottom-0 left-0 w-full border-t border-border bg-background">
               <UserInfo user={currentUser} hideDetails={!sidebarVisible} />
             </div>
           </div>
-          <div className="flex-1 bg-white relative">
+          <div className="flex-1 bg-background relative">
             <button
               onClick={() => setSidebarVisible((v) => !v)}
-              className="fixed top-4 z-30 bg-white border border-gray-300 rounded-full shadow p-1 hover:bg-gray-50 transition"
+              className="fixed top-4 z-30 bg-background border border-border rounded-full shadow p-1 hover:bg-accent transition"
               style={{
                 left: sidebarWidth,
                 transform: "translateX(-50%)",
