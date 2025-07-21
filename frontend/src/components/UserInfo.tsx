@@ -12,7 +12,11 @@ interface UserInfoProps {
 export function UserInfo({ user, hideDetails = false }: UserInfoProps) {
   return (
     <div
-      className={hideDetails ? "p-4 flex justify-center items-center" : "p-4"}
+      className={
+        hideDetails
+          ? "p-4 flex justify-center items-center border-r border-border"
+          : "p-4 border-r border-border"
+      }
       style={{ maxWidth: !hideDetails ? "279px" : "89px" }}
     >
       <div
