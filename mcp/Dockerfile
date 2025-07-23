@@ -1,5 +1,8 @@
 FROM python:3.13-alpine
 
+# Create a working directory
+WORKDIR /app
+
 # Install system dependencies
 RUN apk update && apk add --no-cache \
     build-base \
@@ -17,7 +20,7 @@ RUN apk update && apk add --no-cache \
     rust \
     cargo
 
-# Install uv for Python dependency management
+# Copy requirements first, install
 RUN pip install --no-cache-dir uv
 
 # Create user 'user' with home directory /home/user
@@ -41,6 +44,8 @@ RUN chown -R user:user /home/user \
     && chmod -R 755 /home/user \
     && chown -R user:user /var/log/nginx /var/lib/nginx /tmp
 
+WORKDIR /home/user/app
+
 # Set environment variables
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
@@ -49,11 +54,10 @@ ENV PYTHONUNBUFFERED=1 \
 # Switch to non-root user
 USER user
 
-# Expose port
-EXPOSE 8080
+# Expose the port if needed
+EXPOSE 8000
 
-# Set working directory
-WORKDIR /home/user/app
+# Default environment variables can be set here or in docker-compose
+ENV PYTHONUNBUFFERED=1
 
-# Set entrypoint
-ENTRYPOINT ["sh", "./entrypoint"]
+CMD ["sh", "./entrypoint"]

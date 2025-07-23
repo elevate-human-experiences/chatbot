@@ -1,6 +1,6 @@
 # Copilot Coding Instructions
 
-You are our Lead Full-Stack Engineer.
+You are our Lead   * For chat-style agents in CLI, stream with Rich and asynchronous calls (e.g. using Anthropic's streaming API with extended thinking), managing "thinking" vs. "assistant" tokens.Full-Stack Engineer.
 Design with clarity, consistency and simplicity. Follow OOP and proven design patterns. Keep code DRY. Maintain consistency across files. Be surgical: update only what needs improvement; do not remove unfamiliar code.
 You're joining as a core member of our full-stack engineering team.
 
@@ -160,7 +160,7 @@ backend/
     helpers/          # DB, auth, utilities (use type hints)
       schema.py       # Pydantic schema
       db.py           # MongoDB and Redis helpers
-      llm.py          # LiteLLM integration
+      llm.py          # Anthropic integration with extended thinking
       logger.py       # Logging setup
     routes/           # Falcon Resource classes
       healthcheck.py  # Health check route
@@ -276,28 +276,44 @@ class MongoHelper:
         return MongoHelper._redis_cache
 ```
 
-### LiteLLM Integration
+### Anthropic Integration with Extended Thinking
 
-* Configure LiteLLM for unified LLM access:
+* Configure Anthropic for Claude models with extended thinking:
 
 ```python
-import litellm
-from litellm import acompletion
+from anthropic import AsyncAnthropic
 import os
 import logging
 
 logger = logging.getLogger(__name__)
 
-# Configure LiteLLM
-litellm.set_verbose = False  # Set to True for debugging
-litellm.drop_params = True   # Drop unsupported params instead of erroring
-litellm.max_tokens = 4096    # Default max tokens
-
 class LLMHelper:
-    """Static helper for LLM operations using LiteLLM."""
+    """Static helper for LLM operations using Anthropic's extended thinking mode with tool support."""
 
-    DEFAULT_MODEL = "gpt-4o-mini"
-    FALLBACK_MODELS = ["gpt-3.5-turbo", "claude-3-haiku-20240307"]
+    # Initialize the Anthropic async client (expects ANTHROPIC_API_KEY env variable)
+    client = AsyncAnthropic()
+
+    # Default Claude reasoning model
+    DEFAULT_MODEL: str = "claude-sonnet-4-20250514"
+
+    # Supported models that support extended thinking
+    REASONING_MODELS: List[str] = [
+        "claude-opus-4-20250514",
+        "claude-sonnet-4-20250514",
+        "claude-3-7-sonnet-20250219",
+        "claude-3-5-sonnet-20241022",
+        "claude-3-5-haiku-20241022",
+        "claude-3-opus-20240229",
+    ]
+
+    # Mapping of reasoning effort to thinking token budgets
+    # Based on Anthropic docs: minimum is 1,024 tokens
+    BUDGET_MAP: Dict[str, int] = {
+        'low': 1024,     # Minimum budget
+        'medium': 8192,  # Good balance for most tasks
+        'high': 16384,   # Complex reasoning tasks
+        'max': 32768,    # Maximum for critical tasks
+    }
 
     @staticmethod
     async def generate_completion(
@@ -305,65 +321,71 @@ class LLMHelper:
         model: str | None = None,
         temperature: float = 0.7,
         max_tokens: int | None = None,
+        reasoning_effort: str = 'medium',
+        thinking: dict | None = None,
         **kwargs
     ) -> str:
-        """Generate a completion using LiteLLM with fallback support."""
+        """Generate a completion using Anthropic with extended thinking support."""
         model = model or LLMHelper.DEFAULT_MODEL
 
+        # Prepare thinking payload if requested
+        thinking_payload = None
+        if thinking:
+            budget = thinking.get('budget_tokens', LLMHelper._get_budget(reasoning_effort))
+            thinking_payload = {'type': 'enabled', 'budget_tokens': budget}
+
         try:
-            response = await acompletion(
-                model=model,
-                messages=messages,
-                temperature=temperature,
-                max_tokens=max_tokens,
+            params = {
+                'model': model,
+                'messages': messages,
+                'temperature': temperature,
                 **kwargs
-            )
-            return response.choices[0].message.content
+            }
+            if max_tokens:
+                params['max_tokens'] = max_tokens
+            if thinking_payload:
+                params['thinking'] = thinking_payload
+
+            response = await LLMHelper.client.messages.create(**params)
+            return response.content[0].text
 
         except Exception as e:
-            logger.warning(f"Primary model {model} failed: {e}")
-
-            # Try fallback models
-            for fallback_model in LLMHelper.FALLBACK_MODELS:
-                if fallback_model != model:
-                    try:
-                        logger.info(f"Trying fallback model: {fallback_model}")
-                        response = await acompletion(
-                            model=fallback_model,
-                            messages=messages,
-                            temperature=temperature,
-                            max_tokens=max_tokens,
-                            **kwargs
-                        )
-                        return response.choices[0].message.content
-                    except Exception as fallback_error:
-                        logger.warning(f"Fallback model {fallback_model} failed: {fallback_error}")
-                        continue
-
-            raise Exception(f"All models failed. Last error: {e}")
+            logger.error(f"Anthropic completion failed: {e}")
+            raise
 
     @staticmethod
     async def generate_streaming_completion(
         messages: list[dict],
         model: str | None = None,
         temperature: float = 0.7,
+        reasoning_effort: str = 'medium',
+        thinking: dict | None = None,
         **kwargs
     ):
-        """Generate a streaming completion using LiteLLM."""
+        """Generate a streaming completion using Anthropic with extended thinking."""
         model = model or LLMHelper.DEFAULT_MODEL
 
-        try:
-            response = await acompletion(
-                model=model,
-                messages=messages,
-                temperature=temperature,
-                stream=True,
-                **kwargs
-            )
+        # Prepare thinking payload if requested
+        thinking_payload = None
+        if thinking:
+            budget = thinking.get('budget_tokens', LLMHelper._get_budget(reasoning_effort))
+            thinking_payload = {'type': 'enabled', 'budget_tokens': budget}
 
-            async for chunk in response:
-                if chunk.choices[0].delta.content:
-                    yield chunk.choices[0].delta.content
+        try:
+            params = {
+                'model': model,
+                'messages': messages,
+                'temperature': temperature,
+                'stream': True,
+                **kwargs
+            }
+            if thinking_payload:
+                params['thinking'] = thinking_payload
+
+            stream = await LLMHelper.client.messages.create(**params)
+            async for event in stream:
+                if hasattr(event, 'delta') and hasattr(event.delta, 'text'):
+                    yield event.delta.text
 
         except Exception as e:
             logger.error(f"Streaming completion failed: {e}")
@@ -371,16 +393,8 @@ class LLMHelper:
 
     @staticmethod
     def get_model_list() -> list[str]:
-        """Get list of available models."""
-        return [
-            "gpt-4o",
-            "gpt-4o-mini",
-            "gpt-3.5-turbo",
-            "claude-sonnet-4-20250514",
-            "claude-3-haiku-20240307",
-            "gemini-1.5-pro",
-            "gemini-1.5-flash"
-        ]
+        """Get list of available Claude models."""
+        return LLMHelper.REASONING_MODELS.copy()
 ```
 
 * Usage in route classes:
@@ -393,6 +407,7 @@ class ChatResource:
             data = req.media
             messages = data.get("messages", [])
             model = data.get("model")
+            reasoning_effort = data.get("reasoning_effort", "medium")
 
             # Validate messages
             if not messages:
@@ -400,11 +415,13 @@ class ChatResource:
                 resp.media = {"error": "Messages are required"}
                 return
 
-            # Generate completion
+            # Generate completion with extended thinking
             completion = await LLMHelper.generate_completion(
                 messages=messages,
                 model=model,
-                temperature=0.7
+                temperature=0.7,
+                reasoning_effort=reasoning_effort,
+                thinking={'budget_tokens': LLMHelper._get_budget(reasoning_effort)}
             )
 
             resp.media = {

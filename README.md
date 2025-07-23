@@ -9,7 +9,7 @@ A full-stack chatbot application featuring Claude's reasoning models with stream
 - **Framework**: Falcon ASGI with Uvicorn server
 - **Database**: MongoDB with Motor (async driver)
 - **Cache**: Redis for session and response caching
-- **LLM Integration**: LiteLLM for unified access to Claude models
+- **LLM Integration**: Anthropic Claude models with extended thinking capabilities
 - **Features**:
   - Streaming chat completions
   - Claude reasoning model support

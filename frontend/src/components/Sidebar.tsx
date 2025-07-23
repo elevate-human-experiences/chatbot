@@ -28,6 +28,9 @@ interface SidebarProps {
   onNewConversation: (agentProfileId: string) => void;
   projectId?: string;
   refreshKey?: number; // Add this to force re-renders when conversations change
+  tools?: Array<{ function?: { name?: string; description?: string } }>;
+  toolsLoading?: boolean;
+  toolsError?: string | null;
 }
 
 export function Sidebar({

@@ -35,7 +35,7 @@ export const apiPaths = {
   chatCompletions: () => `${API_BASE_URL}/chat/completions`,
 
   // Health check endpoint
-  health: () => `${API_BASE_URL}/health`,
+  health: () => `${API_BASE_URL}/healthz`,
 } as const;
 
 /**
@@ -52,3 +52,12 @@ export const legacyApiPaths = {
 } as const;
 
 export { API_BASE_URL };
+
+export interface ToolModel {
+  type: "function";
+  function: {
+    name: string;
+    description: string;
+    parameters: Record<string, unknown>;
+  };
+}

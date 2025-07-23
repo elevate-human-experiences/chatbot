@@ -4,7 +4,8 @@ A Python Falcon-based backend service with Claude Anthropic reasoning models and
 
 ## Features
 
-- **AI/LLM Integration**: Support for Claude Anthropic reasoning models, OpenAI GPT, and Google Gemini
+- **AI/LLM Integration**: Support for Claude Anthropic reasoning models with extended thinking, OpenAI GPT, and Google Gemini
+- **Retry Mechanism**: Automatic retry with exponential backoff for API overload and rate limit errors
 - **Database**: MongoDB with Motor async driver and Redis for caching
 - **API**: RESTful endpoints with Falcon ASGI framework
 - **Authentication**: JWT-based authentication with bcrypt password hashing
@@ -36,7 +37,13 @@ A Python Falcon-based backend service with Claude Anthropic reasoning models and
    # Required: Anthropic API Key for Claude models
    ANTHROPIC_API_KEY=your_anthropic_api_key_here
 
-   # Optional: Additional AI provider keys
+   # Optional: Retry configuration (defaults shown)
+   ANTHROPIC_MAX_RETRIES=3
+   ANTHROPIC_INITIAL_RETRY_DELAY=1.0
+   ANTHROPIC_MAX_RETRY_DELAY=60.0
+   ANTHROPIC_BACKOFF_MULTIPLIER=2.0
+
+   # Optional: Additional AI provider keys (not currently used)
    OPENAI_API_KEY=your_openai_api_key_here
    GOOGLE_API_KEY=your_google_api_key_here
 
@@ -93,11 +100,10 @@ The server will start at `http://localhost:8080` by default.
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `ANTHROPIC_API_KEY` | - | **Required**: Anthropic API key for Claude models |
-| `OPENAI_API_KEY` | - | Optional: OpenAI API key for GPT models |
-| `GOOGLE_API_KEY` | - | Optional: Google API key for Gemini models |
-| `DEFAULT_MODEL` | `anthropic/claude-sonnet-4-20250514` | Default LLM model |
-| `LITELLM_MAX_TOKENS` | `4096` | Maximum tokens per request |
-| `LITELLM_TEMPERATURE` | `0.7` | Model temperature setting |
+| `DEFAULT_MODEL` | `claude-sonnet-4-20250514` | Default Claude model |
+| `MAX_TOKENS` | `4096` | Maximum tokens per request |
+| `TEMPERATURE` | `0.7` | Model temperature setting |
+| `REASONING_EFFORT` | `medium` | Extended thinking effort level (low/medium/high) |
 
 ### Security Configuration
 
@@ -258,9 +264,29 @@ The backend follows a modular architecture:
 1. **Falcon ASGI App** - High-performance web framework
 2. **Motor** - Async MongoDB driver
 3. **Redis** - Caching and session storage
-4. **LiteLLM** - Unified interface for multiple AI providers
+4. **Anthropic** - Claude models with extended thinking capabilities
 5. **Pydantic** - Data validation and serialization
 6. **JWT** - Stateless authentication
+
+## Resilience Features
+
+### API Retry Mechanism
+
+The backend includes automatic retry functionality for handling Anthropic API temporary failures:
+
+- **Automatic Retries**: Handles `overloaded_error` and `rate_limit_error` automatically
+- **Exponential Backoff**: Progressively increases delay between retry attempts
+- **Configurable**: Customize retry behavior via environment variables
+- **Logging**: Detailed logging of retry attempts for monitoring
+
+See [RETRY_MECHANISM.md](./RETRY_MECHANISM.md) for detailed documentation.
+
+### Testing Retry Mechanism
+
+```bash
+# Test the retry mechanism
+python test_retry_mechanism.py
+```
 
 ## Support
 
