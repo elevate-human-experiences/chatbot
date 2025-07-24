@@ -35,7 +35,7 @@ export function useChatLogic(
             setSelectedAgentProfileId(profiles[0].id);
           }
         }
-      } catch (error) {
+      } catch {
         // Puedes manejar el error aquí si lo deseas
         // console.error("Error loading default agent:", error);
       } finally {

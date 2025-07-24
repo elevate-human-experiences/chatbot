@@ -71,7 +71,7 @@ export function NewChat({ onNewConversation, projectId, refreshKey, hideDetails 
         agentProfiles.map((profile) => (
           <div key={profile.id} className="w-full flex items-center justify-center p-2">
             <Button
-              className="w-[99%] bg-stone-200 text-stone-800 hover:bg-stone-300 font-medium px-4  transition-colors cursor-pointer flex items-center gap-2"
+              className="w-[99%] bg-gray-200 text-gray-800 hover:bg-gray-300 font-medium px-4  transition-colors cursor-pointer flex items-center gap-2"
               onClick={() => onNewConversation(profile.id)}
             >
               {hideDetails && <Plus className="w-4 h-4 mr-1" />}

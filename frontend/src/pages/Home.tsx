@@ -194,10 +194,10 @@ export function Home() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <Card className="w-[400px] border-neutral-50 bg-stone-50">
+        <Card className="w-[400px] border-neutral-50 bg-gray-50">
           <CardContent className="p-6">
             <div className="text-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-stone-600 mx-auto mb-4"></div>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-600 mx-auto mb-4"></div>
               <p className="text-gray-600">Initializing...</p>
             </div>
           </CardContent>
@@ -271,7 +271,7 @@ export function Home() {
               {error}
             </div>
           )}
-
+          hi
           <div className="space-y-2">
             <p>
               <strong>Projects:</strong> {projects.length}
@@ -283,7 +283,6 @@ export function Home() {
               <strong>Conversations:</strong> {conversations.length}
             </p>
           </div>
-
           <div className="flex gap-2">
             <Button
               onClick={() => user && loadUserData(user.id)}

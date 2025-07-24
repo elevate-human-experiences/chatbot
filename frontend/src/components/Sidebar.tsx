@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { MessageSquare, ChevronRight, ChevronDown } from "lucide-react";
+import { ChevronRight, ChevronDown } from "lucide-react";
 import "@/assets/truncate-gradient-text.css";
 
 interface AgentProfile {
@@ -191,7 +191,7 @@ export function Sidebar({
   }
 
   return (
-    <div className="text-white border-r border-gray-700 flex flex-col h-full min-h-0 overflow-hidden">
+    <div className="text-white border-r border-gray-900 flex flex-col h-full min-h-0 overflow-hidden">
       {/* Agent Profiles and Conversations */}
       <div className="flex-1 min-h-0 overflow-x-hidden">
         <div className="space-y-2">
@@ -208,7 +208,7 @@ export function Sidebar({
                   <div className="flex items-start group flex-col">
                     <Button
                       variant="ghost"
-                      className="w-full flex-1 justify-start text-left font-medium text-sm h-auto text-white hover:bg-stone-200 rounded-none"
+                      className="w-full flex-1 justify-start text-left font-medium text-sm h-auto text-white hover:bg-gray-200 rounded-none"
                       onClick={() => {
                         toggleProfileExpansion(profile.id);
                         // Auto-start new conversation when clicking on agent profile
@@ -246,8 +246,8 @@ export function Sidebar({
                             className={cn(
                               "w-[279px] justify-start text-left text-sm h-auto group",
                               selectedConversationId === conversation.id
-                                ? "bg-stone-200 text-gray-700 rounded-none"
-                                : "text-gray-700 hover:bg-stone-200 rounded-none"
+                                ? "bg-gray-200 text-gray-700 rounded-none"
+                                : "text-gray-700 hover:bg-gray-200 rounded-none"
                             )}
                             onClick={() => onConversationSelect(conversation.id)}
                           >
