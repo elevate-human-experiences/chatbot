@@ -1,0 +1,7 @@
+#!/bin/bash
+set -e
+
+echo "Starting backend server..."
+
+# Activate uv environment and run the server
+uv run serve.py

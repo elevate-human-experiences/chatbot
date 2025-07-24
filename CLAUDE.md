@@ -65,7 +65,7 @@ This is a full-stack chatbot application with Claude reasoning models, featuring
 - `routes/` - Falcon Resource classes for API endpoints:
   - `healthcheck.py` - Health check endpoint
   - `chat.py` - Chat completions with streaming support
-  - `users.py`, `projects.py`, `agent_profiles.py`, `conversations.py`, `instructions.py` - CRUD resources
+  - `users.py`, `projects.py`, `profiles.py`, `conversations.py`, `instructions.py` - CRUD resources
 - `helpers/` - Shared utilities:
   - `db.py` - MongoDB and Redis connection helpers
   - `llm.py` - LiteLLM integration for Claude models
@@ -80,7 +80,7 @@ This is a full-stack chatbot application with Claude reasoning models, featuring
 - `components/` - Reusable components:
   - `ui/` - shadcn/ui components (button, card, input, scroll-area, textarea)
   - `Layout.tsx`, `Navigation.tsx`, `Sidebar.tsx` - Layout components
-  - `ChatArea.tsx`, `NewChat.tsx` - Chat-specific components
+  - `ChatArea.tsx` - Chat-specific components
 - `hooks/` - Custom React hooks for chat logic and context
 - `lib/` - Utilities (`api.ts` for API calls, `utils.ts` for className merging)
 

@@ -72,7 +72,7 @@ export function Home() {
             );
             if (agentProfilesResponse.ok) {
               const agentProfilesResponseData = await agentProfilesResponse.json();
-              const agentProfilesData = agentProfilesResponseData.agent_profiles || [];
+              const agentProfilesData = agentProfilesResponseData.profiles || [];
               setAgentProfiles(agentProfilesData);
             }
 

@@ -1,4 +1,4 @@
-FROM python:3.12-alpine
+FROM python:3.13-alpine
 
 # Install system dependencies
 RUN apk update && apk add --no-cache \
@@ -24,7 +24,7 @@ RUN pip install --no-cache-dir uv
 RUN adduser -D -h /home/user user
 
 # Set working directory
-WORKDIR /home/user/app
+WORKDIR /home/user/
 
 # Copy Python dependencies files
 COPY --chown=user:user pyproject.toml uv.lock ./
@@ -33,7 +33,8 @@ COPY --chown=user:user pyproject.toml uv.lock ./
 RUN uv sync --frozen
 
 # Copy application source code
-COPY --chown=user:user src/ /home/user/app
+COPY app/ /home/user/app
+RUN cp -r /home/user/.venv /home/user/app/.venv
 
 # Set permissions
 RUN chown -R user:user /home/user \
@@ -43,16 +44,16 @@ RUN chown -R user:user /home/user \
 # Set environment variables
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
-    PATH="/home/user/app:${PATH}" \
-    MONGODB_CONNECTION_STRING="mongodb://mongodb:27017" \
-    REDIS_CONNECTION_STRING="redis://redis:6379" \
-    DB_NAME="chatbot"
+    PATH="/home/user/app:${PATH}"
 
 # Switch to non-root user
 USER user
 
 # Expose port
 EXPOSE 8080
+
+# Set working directory
+WORKDIR /home/user/app
 
 # Set entrypoint
 ENTRYPOINT ["sh", "./entrypoint"]

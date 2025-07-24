@@ -11,7 +11,7 @@ export function Chat() {
   }
 
   return (
-    <div className="flex-1 h-full overflow-y-auto bg-white text-foreground">
+    <div className="flex-1 h-full overflow-y-auto bg-background text-foreground">
       <ChatArea
         conversationId={chatLogic.selectedConversationId}
         agentProfileId={chatLogic.selectedAgentProfileId}
