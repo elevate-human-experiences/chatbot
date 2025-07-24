@@ -210,7 +210,7 @@ The application uses MongoDB for primary data storage and Redis for caching. Whe
 
 - `users` - User accounts and profiles
 - `projects` - Project definitions
-- `agent_profiles` - AI agent configurations
+- `profiles` - AI agent configurations
 - `conversations` - Chat conversations and messages
 
 #### Redis Usage

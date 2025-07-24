@@ -1,9 +1,8 @@
-import { Outlet, useParams, useNavigate, useLocation } from "react-router-dom";
-import { Asterisk, ChevronLeft, ChevronRight, MessageCircle, Info, Settings } from "lucide-react";
+import { Outlet, useParams, useNavigate } from "react-router-dom";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { ChatLogicContext } from "@/hooks/ChatLogicContext";
 import { useChatLogic } from "@/hooks/useChatLogic";
 import { Sidebar } from "@/components/Sidebar";
-import { NewChat } from "@/components/NewChat";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
@@ -12,7 +11,6 @@ import { UserInfo } from "@/components/UserInfo";
 export function Layout() {
   const { projectId } = useParams<{ projectId: string }>();
   const navigate = useNavigate();
-  const location = useLocation();
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
   const [sidebarVisible, setSidebarVisible] = useState(true);
   const [currentUser, setCurrentUser] = useState<{
@@ -39,13 +37,6 @@ export function Layout() {
     fetchUser();
   }, [apiBaseUrl]);
 
-  // Navigation menu items
-  const navItems = [
-    { path: "/", label: "Chats", icon: MessageCircle },
-    { path: "/about", label: "About", icon: Info },
-    { path: "/settings", label: "Settings", icon: Settings },
-  ];
-
   // Siempre llama el hook, pero solo usa el resultado si hay projectId
   const chatLogic = useChatLogic(projectId, apiBaseUrl, navigate);
   const showChat = Boolean(projectId);
@@ -61,88 +52,41 @@ export function Layout() {
         <ChatLogicContext.Provider value={{ ...chatLogic, projectId, apiBaseUrl, navigate }}>
           {/* Main layout with sidebar toggle */}
           <div className="flex h-screen">
-            {/* Sidebar + Navigation */}
+            {/* Sidebar */}
             <div
               className="flex flex-col bg-background border-r border-border transition-all duration-200"
               style={{ width: sidebarWidth, minWidth: collapsedSidebarWidth }}
             >
-              {/* Fixed top menu item: Claude Chat */}
+              {/* Fixed top menu item: Elevate */}
               <div
                 className={cn(
                   "sticky top-0 z-10 bg-background w-full px-4 pt-6 pb-2 flex items-center",
                   sidebarVisible ? "justify-start" : "justify-center"
                 )}
               >
-                <Asterisk className="w-4 h-4 text-primary" />
                 {sidebarVisible && (
-                  <span className="font-semibold text-lg text-primary ml-2">Claude Chat</span>
+                  <span className="font-semibold text-lg text-primary ml-2">Elevate</span>
                 )}
               </div>
-              {/* Navigation menu */}
-              <nav
-                className={cn(
-                  "flex flex-col h-auto p-3 gap-2",
-                  sidebarVisible ? "items-start gap-8" : "items-center gap-4"
-                )}
-              >
-                {navItems.map((item) => {
-                  const Icon = item.icon;
-                  const isChat = item.path === "/";
-                  const isActive = isChat
-                    ? location.pathname === "/" || location.pathname.startsWith("/projects")
-                    : location.pathname === item.path;
-                  return (
-                    <button
-                      key={item.path}
-                      type="button"
-                      disabled={isActive}
-                      onClick={() => {
-                        if (!isActive) navigate(item.path);
-                      }}
-                      className={cn(
-                        "flex items-center text-primary hover:bg-accent transition-colors w-full py-2 cursor-pointer",
-                        sidebarVisible ? "gap-3" : "justify-center",
-                        isActive ? "text-primary font-bold" : ""
-                      )}
-                      style={{ background: "none", border: "none", outline: "none" }}
-                    >
-                      <Icon className={cn("w-4 h-4", isActive ? "text-primary" : "")} />
-                      {sidebarVisible && (
-                        <span
-                          className={cn(
-                            "text-base font-normal",
-                            isActive && "font-bold text-primary"
-                          )}
-                        >
-                          {item.label}
-                        </span>
-                      )}
-                    </button>
-                  );
-                })}
-              </nav>
-              <NewChat
-                onNewConversation={chatLogic.handleNewConversation}
-                projectId={projectId}
-                hideDetails={!sidebarVisible}
-              />
-              {/* Sidebar (conversaciones, perfiles, etc) solo si expandido */}
-              {showChat && sidebarVisible && (
-                <ScrollArea className="flex-1 min-h-0 h-0 overflow-hidden mt-3">
-                  <Sidebar
-                    selectedConversationId={chatLogic.selectedConversationId}
-                    onConversationSelect={chatLogic.handleConversationSelect}
-                    onNewConversation={chatLogic.handleNewConversation}
-                    projectId={projectId}
-                    refreshKey={chatLogic.refreshSidebar}
-                  />
-                </ScrollArea>
-              )}
+
+              {/* Sidebar (profiles and conversations) */}
+              <ScrollArea className="flex-1 min-h-0 h-0 overflow-hidden">
+                <Sidebar
+                  selectedConversationId={chatLogic.selectedConversationId}
+                  onConversationSelect={chatLogic.handleConversationSelect}
+                  onNewConversation={chatLogic.handleNewConversation}
+                  projectId={projectId}
+                  refreshKey={chatLogic.refreshSidebar}
+                  collapsed={!sidebarVisible}
+                />
+              </ScrollArea>
+
               {/* UserInfo fixed at the bottom of sidebar */}
               <div className="absolute bottom-0 left-0 w-full border-t border-border bg-background">
                 <UserInfo user={currentUser} hideDetails={!sidebarVisible} />
               </div>
             </div>
+
             {/* Main content area */}
             <div className="flex-1 bg-background relative">
               <button
@@ -153,7 +97,7 @@ export function Layout() {
                   transform: "translateX(-50%)",
                   transition: "left 0.2s",
                 }}
-                aria-label={sidebarVisible ? "Ocultar menú" : "Mostrar menú"}
+                aria-label={sidebarVisible ? "Hide sidebar" : "Show sidebar"}
               >
                 {sidebarVisible ? (
                   <ChevronLeft className="w-4 h-4" />
@@ -168,68 +112,35 @@ export function Layout() {
           </div>
         </ChatLogicContext.Provider>
       ) : (
-        // Layout base sin projectId, pero con botón de mostrar/ocultar sidebar
+        // Layout base sin projectId
         <div className="flex h-screen">
           <div
             className="flex flex-col bg-background border-r border-border transition-all duration-200"
             style={{ width: sidebarWidth, minWidth: collapsedSidebarWidth }}
           >
-            {/* Fixed top menu item: Claude Chat */}
+            {/* Fixed top menu item: Elevate */}
             <div
               className={cn(
                 "sticky top-0 z-10 bg-background w-full px-4 pt-6 pb-2 flex items-center",
                 sidebarVisible ? "justify-start" : "justify-center"
               )}
             >
-              <Asterisk className="w-4 h-4 text-primary" />
               {sidebarVisible && (
-                <span className="font-semibold text-lg text-primary ml-2">Claude Chat</span>
+                <span className="font-semibold text-lg text-primary ml-2">Elevate</span>
               )}
             </div>
-            <nav
-              className={cn(
-                "flex flex-col h-full p-3 border-b border-border",
-                sidebarVisible ? "items-start gap-8" : "items-center gap-4"
-              )}
-            >
-              {navItems.map((item) => {
-                const Icon = item.icon;
-                const isActive = location.pathname === item.path;
-                return (
-                  <button
-                    key={item.path}
-                    type="button"
-                    disabled={isActive}
-                    onClick={() => {
-                      if (!isActive) navigate(item.path);
-                    }}
-                    className={cn(
-                      "flex items-center text-primary hover:bg-accent transition-colors w-full py-2 cursor-pointer",
-                      sidebarVisible ? "gap-3" : "justify-center",
-                      isActive ? "text-primary font-bold " : ""
-                    )}
-                    style={{ background: "none", border: "none", outline: "none" }}
-                  >
-                    <Icon className={cn("w-4 h-4", isActive ? "text-primary" : "")} />
-                    {sidebarVisible && (
-                      <span
-                        className={cn(
-                          "text-base font-normal",
-                          isActive && "font-bold text-primary"
-                        )}
-                      >
-                        {item.label}
-                      </span>
-                    )}
-                  </button>
-                );
-              })}
-            </nav>
+
+            {/* Empty sidebar content */}
+            <div className="flex-1 min-h-0 flex items-center justify-center text-gray-400">
+              {sidebarVisible ? "Select a project to view conversations" : ""}
+            </div>
+
             {/* UserInfo fixed at the bottom of sidebar */}
             <div className="absolute bottom-0 left-0 w-full border-t border-border bg-background">
               <UserInfo user={currentUser} hideDetails={!sidebarVisible} />
             </div>
           </div>
+
           <div className="flex-1 bg-background relative">
             <button
               onClick={() => setSidebarVisible((v) => !v)}
@@ -239,7 +150,7 @@ export function Layout() {
                 transform: "translateX(-50%)",
                 transition: "left 0.2s",
               }}
-              aria-label={sidebarVisible ? "Ocultar menú" : "Mostrar menú"}
+              aria-label={sidebarVisible ? "Hide sidebar" : "Show sidebar"}
             >
               {sidebarVisible ? (
                 <ChevronLeft className="w-4 h-4" />

@@ -72,13 +72,13 @@ class UserResource:
         try:
             # Get existing project and agent profile IDs
             projects_collection = DatabaseHelper.get_collection("projects")
-            agent_profiles_collection = DatabaseHelper.get_collection("agent_profiles")
+            profiles_collection = DatabaseHelper.get_collection("profiles")
 
             # Find default project for this user
             default_project = await projects_collection.find_one({"name": "Default Project", "user_id": user_id})
 
             # Find default agent profile for this user
-            default_agent_profile = await agent_profiles_collection.find_one(
+            default_agent_profile = await profiles_collection.find_one(
                 {"name": "Default Assistant", "user_id": user_id}
             )
 
@@ -136,8 +136,8 @@ class UserResource:
         agent_profile_data = agent_profile_model.model_dump()
         agent_profile_data["user_id"] = user_id
 
-        agent_profiles_collection = DatabaseHelper.get_collection("agent_profiles")
-        await agent_profiles_collection.insert_one(agent_profile_data)
+        profiles_collection = DatabaseHelper.get_collection("profiles")
+        await profiles_collection.insert_one(agent_profile_data)
 
         logger.info("Created default agent profile %s for user %s", agent_profile_id, user_id)
         return agent_profile_id

@@ -1,5 +1,4 @@
 import { useState, useCallback, useEffect, useRef } from "react";
-import { Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -47,9 +46,6 @@ interface ChatAreaProps {
   onConversationCreated?: (conversationId: string) => void;
   onNewChat?: () => void; // Add this prop
   projectId?: string;
-  tools?: Array<{ function?: { name?: string; description?: string } }>;
-  toolsLoading?: boolean;
-  toolsError?: string | null;
 }
 
 export function ChatArea({
@@ -58,9 +54,6 @@ export function ChatArea({
   onConversationCreated,
   onNewChat: _onNewChat, // Reserved for future "New Chat" functionality
   projectId,
-  tools = [],
-  toolsLoading = false,
-  toolsError = null,
 }: ChatAreaProps) {
   // Fake usage to silence TypeScript warning - reserved for future functionality
   void _onNewChat;
@@ -182,7 +175,9 @@ export function ChatArea({
 
   // Show button only if scrollable, with smooth show/hide
   useEffect(() => {
-    const container = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]') as HTMLDivElement;
+    const container = scrollAreaRef.current?.querySelector(
+      "[data-radix-scroll-area-viewport]"
+    ) as HTMLDivElement;
     if (!container) return;
 
     const handleScroll = () => {
@@ -206,14 +201,18 @@ export function ChatArea({
 
   // Scroll to bottom when messages grow
   useEffect(() => {
-    const container = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]') as HTMLDivElement;
+    const container = scrollAreaRef.current?.querySelector(
+      "[data-radix-scroll-area-viewport]"
+    ) as HTMLDivElement;
     if (!container) return;
     container.scrollTo({ top: container.scrollHeight, behavior: "smooth" });
   }, [messages.length, currentStreamingMessage]);
 
   // Scroll to top handler
   const handleScrollTop = () => {
-    const container = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]') as HTMLDivElement;
+    const container = scrollAreaRef.current?.querySelector(
+      "[data-radix-scroll-area-viewport]"
+    ) as HTMLDivElement;
     if (container) {
       container.scrollTo({ top: 0, behavior: "smooth" });
     }
@@ -417,7 +416,6 @@ export function ChatArea({
     }
   };
 
-
   const stopGeneration = () => {
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
@@ -429,50 +427,6 @@ export function ChatArea({
       return `Message ${agentProfile.name}...`;
     }
     return "Select an agent profile to start chatting...";
-  };
-
-  // --- Tools UI ---
-  const renderTools = () => {
-    if (toolsLoading) {
-      return (
-        <div className="flex items-center gap-2 text-muted-foreground text-sm">
-          <Wrench size={16} />
-          <span>Loading tools...</span>
-        </div>
-      );
-    }
-    if (toolsError) {
-      return (
-        <div className="flex items-center gap-2 text-destructive text-sm">
-          <Wrench size={16} />
-          <span>Error loading tools</span>
-        </div>
-      );
-    }
-    if (!tools.length) {
-      return (
-        <div className="flex items-center gap-2 text-muted-foreground text-sm">
-          <Wrench size={16} />
-          <span>No tools available</span>
-        </div>
-      );
-    }
-    return (
-      <div className="flex items-center gap-2">
-        <Wrench size={16} className="text-primary" />
-        <span className="font-medium text-sm">Tools:</span>
-        <ul className="flex gap-2 text-xs text-muted-foreground">
-          {tools.map((tool, idx: number) => (
-            <li key={tool.function?.name || idx} className="bg-accent px-2 py-0.5 rounded">
-              <span className="font-semibold">{tool.function?.name}</span>
-              {tool.function?.description && (
-                <span className="ml-1 text-muted-foreground">- {tool.function.description}</span>
-              )}
-            </li>
-          ))}
-        </ul>
-      </div>
-    );
   };
 
   // Render thinking section for messages
@@ -492,17 +446,17 @@ export function ChatArea({
               [expandKey]: !prev[expandKey],
             }))
           }
-          className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 font-medium transition-colors"
+          className="flex items-center space-x-2 text-muted-foreground hover:text-foreground font-medium transition-colors"
         >
           {isExpanded ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
-          <span>💭 {isStreaming ? "thinking in progress..." : "thinking"}</span>
+          <span>💭 {isStreaming ? "Thinking..." : "Thought"}</span>
         </button>
         {isExpanded && (
-          <div className="mt-2 p-3 bg-blue-50 rounded border-l-4 border-blue-200">
-            <div className="whitespace-pre-wrap text-gray-700 text-sm font-mono">
+          <div className="mt-2 p-3 bg-accent rounded border-l-4 border-border">
+            <div className="whitespace-pre-wrap text-foreground text-sm font-mono">
               {thinkingContent}
               {isStreaming && (
-                <span className="inline-block w-2 h-4 bg-blue-400 ml-1 animate-pulse"></span>
+                <span className="inline-block w-2 h-4 bg-primary ml-1 animate-pulse"></span>
               )}
             </div>
           </div>
@@ -514,10 +468,10 @@ export function ChatArea({
   // Empty state when no agent profile is selected
   if (!agentProfileId && !conversationId) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-white">
-        <div className="text-center text-gray-500 max-w-md">
-          <Bot className="w-16 h-16 mx-auto mb-4 text-gray-300" />
-          <h2 className="text-xl font-semibold mb-2">Welcome to the Chat</h2>
+      <div className="flex-1 flex items-center justify-center bg-background">
+        <div className="text-center text-muted-foreground max-w-md">
+          <Bot className="w-16 h-16 mx-auto mb-4 text-muted" />
+          <h2 className="text-xl font-semibold mb-2 text-foreground">Welcome to the Chat</h2>
           <p>Loading your default agent profile...</p>
         </div>
       </div>
@@ -525,181 +479,174 @@ export function ChatArea({
   }
 
   return (
-    <div className="flex flex-col flex-1 h-full">
-      {/* Tools bar at the top */}
-      <div className="px-6 pt-4 pb-2 border-b bg-background">{renderTools()}</div>
-
-      <div className="flex-1 flex flex-col bg-white h-[95vh]">
-        {/* Header */}
-        {agentProfile && (
-          <div className="border-b border-gray-200 p-4 bg-white flex-shrink-0">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center">
-                  <Bot className="w-5 h-5 text-white" />
-                </div>
-                <div>
-                  <h1 className="font-semibold text-gray-900">{agentProfile.name}</h1>
-                  {agentProfile.description && (
-                    <p className="text-sm text-gray-500">{agentProfile.description}</p>
-                  )}
-                </div>
+    <div className="flex-1 flex flex-col bg-background h-full">
+      {/* Header */}
+      {agentProfile && (
+        <div className="border-b border-border p-4 bg-background flex-shrink-0">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                <Bot className="w-5 h-5 text-primary-foreground" />
+              </div>
+              <div>
+                <h1 className="font-semibold text-foreground">{agentProfile.name}</h1>
+                {agentProfile.description && (
+                  <p className="text-sm text-muted-foreground">{agentProfile.description}</p>
+                )}
               </div>
             </div>
           </div>
-        )}
+        </div>
+      )}
 
-        {/* Messages */}
-        <ScrollArea className="h-full px-4" ref={scrollAreaRef}>
-          <div className="max-w-3xl mx-auto py-6">
-            {messages.length === 0 && !currentStreamingMessage && agentProfile && (
-              <div className="text-center py-12">
-                <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Bot className="w-8 h-8 text-purple-600" />
+      {/* Messages */}
+      <ScrollArea className="h-full px-4" ref={scrollAreaRef}>
+        <div className="max-w-3xl mx-auto py-6">
+          {messages.length === 0 && !currentStreamingMessage && agentProfile && (
+            <div className="text-center py-12">
+              <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+                <Bot className="w-8 h-8 text-muted-foreground" />
+              </div>
+              <h3 className="text-lg font-semibold text-foreground mb-2">
+                Chat with {agentProfile.name}
+              </h3>
+              <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                {agentProfile.description || "Start a conversation by typing a message below."}
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-md mx-auto">
+                <button
+                  onClick={() => setInput("Hello! How can you help me today?")}
+                  className="p-3 text-left border border-border rounded-lg hover:bg-accent transition-colors"
+                >
+                  <div className="font-medium text-sm text-foreground">Say hello</div>
+                  <div className="text-xs text-muted-foreground">Start with a greeting</div>
+                </button>
+                <button
+                  onClick={() => setInput("What can you help me with?")}
+                  className="p-3 text-left border border-border rounded-lg hover:bg-accent transition-colors"
+                >
+                  <div className="font-medium text-sm text-foreground">Get help</div>
+                  <div className="text-xs text-muted-foreground">Learn about capabilities</div>
+                </button>
+              </div>
+            </div>
+          )}
+
+          <div className="space-y-6">
+            {messages.map((message) => (
+              <div key={message.id} className="flex space-x-3">
+                <div className="flex-shrink-0">
+                  {message.role === "user" ? (
+                    <div className="w-8 h-8 bg-secondary rounded-full flex items-center justify-center">
+                      <UserIcon className="w-5 h-5 text-secondary-foreground" />
+                    </div>
+                  ) : (
+                    <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                      <Bot className="w-5 h-5 text-primary-foreground" />
+                    </div>
+                  )}
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  Chat with {agentProfile.name}
-                </h3>
-                <p className="text-gray-500 mb-6 max-w-md mx-auto">
-                  {agentProfile.description || "Start a conversation by typing a message below."}
-                </p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-md mx-auto">
-                  <button
-                    onClick={() => setInput("Hello! How can you help me today?")}
-                    className="p-3 text-left border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-                  >
-                    <div className="font-medium text-sm text-gray-900">Say hello</div>
-                    <div className="text-xs text-gray-500">Start with a greeting</div>
-                  </button>
-                  <button
-                    onClick={() => setInput("What can you help me with?")}
-                    className="p-3 text-left border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-                  >
-                    <div className="font-medium text-sm text-gray-900">Get help</div>
-                    <div className="text-xs text-gray-500">Learn about capabilities</div>
-                  </button>
+                <div className="flex-1 min-w-0">
+                  <div className="bg-muted rounded-lg p-4">
+                    {message.role === "assistant" && renderThinking(message, false)}
+
+                    <div className="prose prose-sm max-w-none">
+                      <div className="whitespace-pre-wrap text-foreground">{message.content}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+
+            {currentStreamingMessage && (
+              <div className="flex space-x-3">
+                <div className="flex-shrink-0">
+                  <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                    <Bot className="w-5 h-5 text-primary-foreground" />
+                  </div>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="bg-muted rounded-lg p-4">
+                    {renderThinking(currentStreamingMessage, true)}
+
+                    <div className="prose prose-sm max-w-none">
+                      <div className="whitespace-pre-wrap text-foreground">
+                        {currentStreamingMessage.content}
+                        {currentStreamingMessage.content && (
+                          <span className="inline-block w-2 h-5 bg-muted-foreground ml-1 animate-pulse"></span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
-
-            <div className="space-y-6">
-              {messages.map((message) => (
-                <div key={message.id} className="flex space-x-3">
-                  <div className="flex-shrink-0">
-                    {message.role === "user" ? (
-                      <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
-                        <UserIcon className="w-5 h-5 text-white" />
-                      </div>
-                    ) : (
-                      <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center">
-                        <Bot className="w-5 h-5 text-white" />
-                      </div>
-                    )}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="bg-gray-50 rounded-lg p-4">
-                      {message.role === "assistant" && renderThinking(message, false)}
-
-                      <div className="prose prose-sm max-w-none">
-                        <div className="whitespace-pre-wrap">{message.content}</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-
-              {currentStreamingMessage && (
-                <div className="flex space-x-3">
-                  <div className="flex-shrink-0">
-                    <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center">
-                      <Bot className="w-5 h-5 text-white" />
-                    </div>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="bg-gray-50 rounded-lg p-4">
-                      {renderThinking(currentStreamingMessage, true)}
-
-                      <div className="prose prose-sm max-w-none">
-                        <div className="whitespace-pre-wrap">
-                          {currentStreamingMessage.content}
-                          {currentStreamingMessage.content && (
-                            <span className="inline-block w-2 h-5 bg-gray-400 ml-1 animate-pulse"></span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
           </div>
-        </ScrollArea>
-
-        {/* Scroll to top button */}
-        <div
-          className={`fixed bottom-24 right-6 transition-opacity duration-300 ${
-            showScrollTopButton
-              ? "opacity-100 pointer-events-auto"
-              : "opacity-0 pointer-events-none"
-          }`}
-        >
-          <button
-            className="bg-gray-400 hover:bg-gray-500 text-white rounded-full w-9 h-9 flex items-center justify-center transition-all duration-300 cursor-pointer shadow-lg"
-            type="button"
-            onClick={handleScrollTop}
-            aria-label="Scroll to top"
-          >
-            <ChevronUp className="w-5 h-5" />
-          </button>
         </div>
+      </ScrollArea>
 
-        {/* Input */}
-        <div className="border-t border-gray-200 bg-white flex-shrink-0">
-          <div className="max-w-3xl mx-auto p-4">
-            <div className="flex items-end space-x-3">
-              <div className="flex-1 relative">
-                <Textarea
-                  ref={textareaRef}
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && !e.shiftKey) {
-                      e.preventDefault();
-                      sendMessage();
-                    }
-                  }}
-                  placeholder={getPlaceholder()}
-                  disabled={isLoading || !agentProfileId}
-                  className="min-h-[52px] max-h-[120px] resize-none border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-lg pr-12"
-                  rows={1}
-                />
-                <div className="absolute right-3 bottom-3">
-                  {isLoading ? (
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={stopGeneration}
-                      className="h-8 w-8 p-0 text-gray-500 hover:text-red-600"
-                    >
-                      <Square className="w-4 h-4" />
-                    </Button>
-                  ) : (
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={sendMessage}
-                      disabled={!input.trim() || !agentProfileId}
-                      className="h-8 w-8 p-0 text-gray-500 hover:text-blue-600 disabled:text-gray-300"
-                    >
-                      <Send className="w-4 h-4" />
-                    </Button>
-                  )}
-                </div>
+      {/* Scroll to top button */}
+      <div
+        className={`fixed bottom-24 right-6 transition-opacity duration-300 ${
+          showScrollTopButton ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        }`}
+      >
+        <button
+          className="bg-muted hover:bg-accent text-muted-foreground rounded-full w-9 h-9 flex items-center justify-center transition-all duration-300 cursor-pointer shadow-lg"
+          type="button"
+          onClick={handleScrollTop}
+          aria-label="Scroll to top"
+        >
+          <ChevronUp className="w-5 h-5" />
+        </button>
+      </div>
+
+      {/* Input */}
+      <div className="border-t border-border bg-background flex-shrink-0">
+        <div className="max-w-3xl mx-auto p-4">
+          <div className="flex items-end space-x-3">
+            <div className="flex-1 relative">
+              <Textarea
+                ref={textareaRef}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                  }
+                }}
+                placeholder={getPlaceholder()}
+                disabled={isLoading || !agentProfileId}
+                className="min-h-[52px] max-h-[120px] resize-none border-border focus:border-ring focus:ring-ring rounded-lg pr-12"
+                rows={1}
+              />
+              <div className="absolute right-3 bottom-3">
+                {isLoading ? (
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={stopGeneration}
+                    className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive"
+                  >
+                    <Square className="w-4 h-4" />
+                  </Button>
+                ) : (
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={sendMessage}
+                    disabled={!input.trim() || !agentProfileId}
+                    className="h-8 w-8 p-0 text-muted-foreground hover:text-primary disabled:text-muted-foreground/50"
+                  >
+                    <Send className="w-4 h-4" />
+                  </Button>
+                )}
               </div>
             </div>
-            <div className="mt-2 text-xs text-gray-500 text-center">
-              Press Enter to send, Shift+Enter for new line
-            </div>
+          </div>
+          <div className="mt-2 text-xs text-muted-foreground text-center">
+            Press Enter to send, Shift+Enter for new line
           </div>
         </div>
       </div>

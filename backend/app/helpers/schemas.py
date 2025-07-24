@@ -152,6 +152,7 @@ class AgentProfileModel(BaseModel):
     name: str = Field(..., description="Descriptive name of the profile")
     description: str | None = Field(None, description="Optional description of the agent profile")
     project_id: str = Field(..., description="Identifier of the project this agent profile belongs to")
+    avatar: str | None = Field(None, description="Base64 encoded avatar image")
     instructions: list[str] = Field(
         default_factory=list, description="list of instruction strings for the agent to follow"
     )

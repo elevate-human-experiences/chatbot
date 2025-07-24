@@ -49,7 +49,7 @@ from helpers import json_encoder
 from routes.healthcheck import HealthCheckResource
 from routes.users import UserResource
 from routes.projects import ProjectResource
-from routes.agent_profiles import AgentProfileResource
+from routes.profiles import AgentProfileResource
 from routes.conversations import ConversationResource, ConversationMessageResource
 from routes.instructions import InstructionResource
 from routes.listtools import ListToolsResource

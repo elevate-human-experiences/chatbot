@@ -30,7 +30,7 @@ export function useChatLogic(
         const profilesResponse = await fetch(`${apiBaseUrl}/projects/${projectId}/profiles`);
         if (profilesResponse.ok) {
           const profilesData = await profilesResponse.json();
-          const profiles = profilesData.agent_profiles || [];
+          const profiles = profilesData.profiles || [];
           if (profiles.length > 0) {
             setSelectedAgentProfileId(profiles[0].id);
           }

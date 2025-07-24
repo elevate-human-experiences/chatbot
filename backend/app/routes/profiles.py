@@ -45,8 +45,57 @@ from pydantic import ValidationError
 from helpers.db import DatabaseHelper
 from helpers.schemas import AgentProfileModel
 import uuid
+import base64
+from io import BytesIO
+from PIL import Image, ImageDraw, ImageFont
+import hashlib
 
 logger = logging.getLogger(__name__)
+
+
+def generate_default_avatar(name: str, size: int = 64) -> str:
+    """Generate a default avatar with initials based on the profile name."""
+    # Get initials (up to 2 characters)
+    initials = "".join([word[0].upper() for word in name.split()][:2])
+    if not initials:
+        initials = name[:2].upper()
+
+    # Generate a consistent color based on the name
+    hash_object = hashlib.md5(name.encode())
+    hex_dig = hash_object.hexdigest()
+
+    # Convert hash to RGB color
+    r = int(hex_dig[:2], 16)
+    g = int(hex_dig[2:4], 16)
+    b = int(hex_dig[4:6], 16)
+
+    # Create image
+    image = Image.new("RGB", (size, size), (r, g, b))
+    draw = ImageDraw.Draw(image)
+
+    # Try to use a font, fallback to default
+    try:
+        font = ImageFont.truetype("arial.ttf", size // 3)
+    except OSError:
+        font = ImageFont.load_default()
+
+    # Calculate text position to center it
+    bbox = draw.textbbox((0, 0), initials, font=font)
+    text_width = bbox[2] - bbox[0]
+    text_height = bbox[3] - bbox[1]
+
+    x = (size - text_width) // 2
+    y = (size - text_height) // 2
+
+    # Draw text
+    draw.text((x, y), initials, fill="white", font=font)
+
+    # Save to base64
+    buffer = BytesIO()
+    image.save(buffer, format="PNG")
+    img_data = buffer.getvalue()
+
+    return base64.b64encode(img_data).decode("utf-8")
 
 
 class AgentProfileResource:
@@ -59,7 +108,7 @@ class AgentProfileResource:
     async def on_get(self, req, resp, project_id: str, profile_id: str | None = None) -> None:
         """Get a single agent profile by ID or list all agent profiles within a project."""
         try:
-            collection = DatabaseHelper.get_collection("agent_profiles")
+            collection = DatabaseHelper.get_collection("profiles")
 
             if profile_id:
                 # Get single agent profile within the specified project
@@ -71,6 +120,11 @@ class AgentProfileResource:
 
                 # Remove MongoDB's _id field
                 profile_doc.pop("_id", None)
+
+                # Generate avatar if not present
+                if not profile_doc.get("avatar"):
+                    profile_doc["avatar"] = generate_default_avatar(profile_doc["name"])
+
                 profile = AgentProfileModel.model_validate(profile_doc)
                 resp.media = profile.model_dump()
             else:
@@ -89,6 +143,11 @@ class AgentProfileResource:
                 profiles = []
                 async for profile_doc in cursor:
                     profile_doc.pop("_id", None)
+
+                    # Generate avatar if not present
+                    if not profile_doc.get("avatar"):
+                        profile_doc["avatar"] = generate_default_avatar(profile_doc["name"])
+
                     profile = AgentProfileModel.model_validate(profile_doc)
                     profiles.append(profile.model_dump())
 
@@ -96,7 +155,7 @@ class AgentProfileResource:
                 total = await collection.count_documents(filter_query)
 
                 resp.media = {
-                    "agent_profiles": profiles,
+                    "profiles": profiles,
                     "pagination": {"page": page, "limit": limit, "total": total, "pages": (total + limit - 1) // limit},
                 }
 
@@ -120,9 +179,13 @@ class AgentProfileResource:
             # Set creation timestamp
             data["created_at"] = datetime.now(timezone.utc)
 
+            # Generate avatar if not provided
+            if not data.get("avatar"):
+                data["avatar"] = generate_default_avatar(data["name"])
+
             # Validate with Pydantic
             profile = AgentProfileModel.model_validate(data)
-            collection = DatabaseHelper.get_collection("agent_profiles")
+            collection = DatabaseHelper.get_collection("profiles")
 
             # Check if agent profile with this ID already exists
             existing_profile = await collection.find_one({"id": profile.id})
@@ -149,7 +212,7 @@ class AgentProfileResource:
         """Update an existing agent profile within a project."""
         try:
             data = await req.get_media()
-            collection = DatabaseHelper.get_collection("agent_profiles")
+            collection = DatabaseHelper.get_collection("profiles")
 
             # Check if agent profile exists within the specified project
             existing_profile = await collection.find_one({"id": profile_id, "project_id": project_id})
@@ -182,7 +245,7 @@ class AgentProfileResource:
     async def on_delete(self, req, resp, project_id: str, profile_id: str) -> None:
         """Delete an agent profile within a project."""
         try:
-            collection = DatabaseHelper.get_collection("agent_profiles")
+            collection = DatabaseHelper.get_collection("profiles")
 
             # Check if agent profile exists within the specified project
             existing_profile = await collection.find_one({"id": profile_id, "project_id": project_id})

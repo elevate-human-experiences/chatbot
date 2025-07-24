@@ -63,7 +63,7 @@ class InstructionResource:
     async def on_get(self, req, resp, project_id: str, profile_id: str, instruction_index: int | None = None) -> None:
         """Get a specific instruction by index or list all instructions for an agent profile within a project."""
         try:
-            collection = DatabaseHelper.get_collection("agent_profiles")
+            collection = DatabaseHelper.get_collection("profiles")
 
             # Get the agent profile within the specified project
             profile_doc = await collection.find_one({"id": profile_id, "project_id": project_id})
@@ -105,7 +105,7 @@ class InstructionResource:
         try:
             data = await req.get_media()
             instruction_req = InstructionRequest.model_validate(data)
-            collection = DatabaseHelper.get_collection("agent_profiles")
+            collection = DatabaseHelper.get_collection("profiles")
 
             # Check if agent profile exists within the specified project
             existing_profile = await collection.find_one({"id": profile_id, "project_id": project_id})
@@ -147,7 +147,7 @@ class InstructionResource:
         try:
             data = await req.get_media()
             instruction_req = InstructionRequest.model_validate(data)
-            collection = DatabaseHelper.get_collection("agent_profiles")
+            collection = DatabaseHelper.get_collection("profiles")
 
             # Check if agent profile exists within the specified project
             existing_profile = await collection.find_one({"id": profile_id, "project_id": project_id})
@@ -189,7 +189,7 @@ class InstructionResource:
     async def on_delete(self, req, resp, project_id: str, profile_id: str, instruction_index: int) -> None:
         """Delete an instruction from an agent profile within a project."""
         try:
-            collection = DatabaseHelper.get_collection("agent_profiles")
+            collection = DatabaseHelper.get_collection("profiles")
 
             # Check if agent profile exists within the specified project
             existing_profile = await collection.find_one({"id": profile_id, "project_id": project_id})

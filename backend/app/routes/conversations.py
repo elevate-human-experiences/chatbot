@@ -278,7 +278,7 @@ class ConversationMessageResource:
             agent_profile_id = conversation_model.agent_profile_id
 
             if agent_profile_id:
-                profiles_collection = DatabaseHelper.get_collection("agent_profiles")
+                profiles_collection = DatabaseHelper.get_collection("profiles")
                 agent_profile = await profiles_collection.find_one({"id": agent_profile_id, "project_id": project_id})
 
             # Prepare messages for LLM (extract just role and content)
