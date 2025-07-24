@@ -1,8 +1,15 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
-import { Send, Square, Bot, User as UserIcon, ChevronDown, ChevronRight } from "lucide-react";
+import {
+  Send,
+  Square,
+  Bot,
+  User as UserIcon,
+  ChevronDown,
+  ChevronRight,
+  ChevronUp,
+} from "lucide-react";
 
 interface Message {
   id: string;
@@ -61,9 +68,12 @@ export function ChatArea({
     instructions?: string[];
   } | null>(null);
   const [expandedReasoning, setExpandedReasoning] = useState<{ [key: string]: boolean }>({});
-  const scrollAreaRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
+
+  // Ref for the scrollable messages container
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const [showScrollTopButton, setShowScrollTopButton] = useState(false);
 
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
 
@@ -154,13 +164,6 @@ export function ChatArea({
     }
   }, [agentProfileId, projectId, loadAgentProfile]);
 
-  // Auto-scroll to bottom when new messages arrive
-  useEffect(() => {
-    if (scrollAreaRef.current) {
-      scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
-    }
-  }, [messages, currentStreamingMessage]);
-
   // Auto-resize textarea
   useEffect(() => {
     if (textareaRef.current) {
@@ -168,6 +171,45 @@ export function ChatArea({
       textareaRef.current.style.height = Math.min(textareaRef.current.scrollHeight, 120) + "px";
     }
   }, [input]);
+
+  // Show button only if scrollable, with smooth show/hide
+  useEffect(() => {
+    const container = messagesContainerRef.current;
+    if (!container) return;
+
+    const handleScroll = () => {
+      setShowScrollTopButton(container.scrollTop > 100);
+    };
+
+    const checkScrollable = () => {
+      if (!container) return;
+      setShowScrollTopButton(
+        container.scrollHeight > container.clientHeight && container.scrollTop > 100
+      );
+    };
+
+    container.addEventListener("scroll", handleScroll);
+    checkScrollable();
+
+    return () => {
+      container.removeEventListener("scroll", handleScroll);
+    };
+  }, [messages.length, currentStreamingMessage]);
+
+  // Scroll to bottom when messages grow
+  useEffect(() => {
+    const container = messagesContainerRef.current;
+    if (!container) return;
+    container.scrollTo({ top: container.scrollHeight, behavior: "smooth" });
+  }, [messages.length, currentStreamingMessage]);
+
+  // Scroll to top handler
+  const handleScrollTop = () => {
+    const container = messagesContainerRef.current;
+    if (container) {
+      container.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
 
   const createNewConversation = async (firstMessage: Message) => {
     if (!agentProfileId || !projectId) return null;
@@ -472,10 +514,10 @@ export function ChatArea({
     <div className="flex-1 flex flex-col bg-white h-[95vh]">
       {/* Header */}
       {agentProfile && (
-        <div className="border-b border-gray-200 p-4 bg-white flex-shrink-0">
+        <div className="fixed border-gray-200 p-4 bg-white flex-shrink-0 m-5">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center">
+              <div className="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center">
                 <Bot className="w-5 h-5 text-white" />
               </div>
               <div>
@@ -489,55 +531,62 @@ export function ChatArea({
         </div>
       )}
 
-      {/* Messages */}
-      <ScrollArea className="h-full px-4" ref={scrollAreaRef}>
-        <div className="max-w-3xl mx-auto py-6">
+      {/* CHAT */}
+
+      <div className="flex-1 px-4 overflow-y-auto" ref={messagesContainerRef}>
+        <div className="max-w-3xl mx-auto pt-16 pb-30">
+          {/* NO MESSAGES */}
+
           {messages.length === 0 && !currentStreamingMessage && agentProfile && (
-            <div className="text-center py-12">
-              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Bot className="w-8 h-8 text-purple-600" />
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Chat with {agentProfile.name}
-              </h3>
-              <p className="text-gray-500 mb-6 max-w-md mx-auto">
-                {agentProfile.description || "Start a conversation by typing a message below."}
-              </p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-md mx-auto">
-                <button
-                  onClick={() => setInput("Hello! How can you help me today?")}
-                  className="p-3 text-left border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  <div className="font-medium text-sm text-gray-900">Say hello</div>
-                  <div className="text-xs text-gray-500">Start with a greeting</div>
-                </button>
-                <button
-                  onClick={() => setInput("What can you help me with?")}
-                  className="p-3 text-left border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  <div className="font-medium text-sm text-gray-900">Get help</div>
-                  <div className="text-xs text-gray-500">Learn about capabilities</div>
-                </button>
+            <div className="flex items-center justify-center min-h-[65vh]">
+              <div className="text-center w-full">
+                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Bot className="w-8 h-8 text-gray-600" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  Chat with {agentProfile.name}
+                </h3>
+                <p className="text-gray-500 mb-6 max-w-md mx-auto">
+                  {agentProfile.description || "Start a conversation by typing a message below."}
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-md mx-auto">
+                  <button
+                    onClick={() => setInput("Hello! How can you help me today?")}
+                    className="p-3 text-left border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                  >
+                    <div className="font-medium text-sm text-gray-900">Say hello</div>
+                    <div className="text-xs text-gray-500">Start with a greeting</div>
+                  </button>
+                  <button
+                    onClick={() => setInput("What can you help me with?")}
+                    className="p-3 text-left border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                  >
+                    <div className="font-medium text-sm text-gray-900">Get help</div>
+                    <div className="text-xs text-gray-500">Learn about capabilities</div>
+                  </button>
+                </div>
               </div>
             </div>
           )}
+
+          {/* MESSAGES */}
 
           <div className="space-y-6">
             {messages.map((message) => (
               <div key={message.id} className="flex space-x-3">
                 <div className="flex-shrink-0">
                   {message.role === "user" ? (
-                    <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+                    <div className="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center">
                       <UserIcon className="w-5 h-5 text-white" />
                     </div>
                   ) : (
-                    <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center">
-                      <Bot className="w-5 h-5 text-white" />
+                    <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
+                      <Bot className="w-5 h-5 text-gray-700" />
                     </div>
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="bg-gray-0 rounded-lg p-4">
                     {message.reasoning && (
                       <div className="mb-4 text-sm">
                         <button
@@ -577,7 +626,7 @@ export function ChatArea({
             {currentStreamingMessage && (
               <div className="flex space-x-3">
                 <div className="flex-shrink-0">
-                  <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center">
+                  <div className="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center">
                     <Bot className="w-5 h-5 text-white" />
                   </div>
                 </div>
@@ -602,7 +651,7 @@ export function ChatArea({
                           <span>💭 thinking in progress...</span>
                         </button>
                         {expandedReasoning["streaming"] && (
-                          <div className="mt-2 p-3 bg-blue-50 rounded border-l-4 border-blue-200">
+                          <div className="mt-2 p-3 bg-blue-50 rounded border-l-4 border-gray-200">
                             <div className="whitespace-pre-wrap text-gray-700">
                               {currentStreamingMessage.reasoning}
                               <span className="inline-block w-2 h-4 bg-blue-400 ml-1 animate-pulse"></span>
@@ -623,51 +672,69 @@ export function ChatArea({
               </div>
             )}
           </div>
-        </div>
-      </ScrollArea>
 
-      {/* Input */}
-      <div className="border-t border-gray-200 bg-white flex-shrink-0">
-        <div className="max-w-3xl mx-auto p-4">
-          <div className="flex items-end space-x-3">
-            <div className="flex-1 relative">
-              <Textarea
-                ref={textareaRef}
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder={getPlaceholder()}
-                disabled={isLoading || !agentProfileId}
-                className="min-h-[52px] max-h-[120px] resize-none border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-lg pr-12"
-                rows={1}
-              />
-              <div className="absolute right-3 bottom-3">
-                {isLoading ? (
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={stopGeneration}
-                    className="h-8 w-8 p-0 text-gray-500 hover:text-red-600"
-                  >
-                    <Square className="w-4 h-4" />
-                  </Button>
-                ) : (
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={sendMessage}
-                    disabled={!input.trim() || !agentProfileId}
-                    className="h-8 w-8 p-0 text-gray-500 hover:text-blue-600 disabled:text-gray-300"
-                  >
-                    <Send className="w-4 h-4" />
-                  </Button>
-                )}
+          {/* Text Area input */}
+
+          <div className="z-10 flex justify-center fixed bottom-5 w-3xl mx-auto">
+            <div className="p-5 bg-gray-50 rounded-lg w-3xl">
+              <div className="flex items-end space-x-3">
+                <div className="flex-1 relative">
+                  <Textarea
+                    ref={textareaRef}
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    placeholder={getPlaceholder()}
+                    disabled={isLoading || !agentProfileId}
+                    className="min-h-[52px] max-h-[120px] resize-none border-gray-300 focus:border-gray-500 focus:ring-gray-500 rounded-lg pr-12 w-full"
+                    rows={1}
+                  />
+                  <div className="absolute right-3 bottom-3">
+                    {isLoading ? (
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={stopGeneration}
+                        className="h-8 w-8 p-0 text-gray-500 hover:text-red-600 cursor-pointer"
+                      >
+                        <Square className="w-4 h-4" />
+                      </Button>
+                    ) : (
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={sendMessage}
+                        disabled={!input.trim() || !agentProfileId}
+                        className="h-8 w-8 p-0 text-gray-500 hover:text-gray-600 disabled:text-gray-300 cursor-pointer"
+                      >
+                        <Send className="w-4 h-4 text-gray-500" />
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className="mt-2 text-xs text-gray-500 text-center">
+                Press Enter to send, Shift+Enter for new line
               </div>
             </div>
           </div>
-          <div className="mt-2 text-xs text-gray-500 text-center">
-            Press Enter to send, Shift+Enter for new line
-          </div>
+        </div>
+        {/* Botón redondo gris con chevron hacia arriba, solo si hay scroll */}
+        <div
+          className={`fixed bottom-9 right-15 transition-opacity duration-300 ${
+            showScrollTopButton
+              ? "opacity-100 pointer-events-auto"
+              : "opacity-0 pointer-events-none"
+          }`}
+        >
+          <button
+            className="bg-gray-400 hover:bg-gray-500 text-white rounded-full w-9 h-9 flex items-center justify-center transition-all duration-300 cursor-pointer"
+            type="button"
+            onClick={handleScrollTop}
+            aria-label="Scroll to top"
+          >
+            <ChevronUp className="w-5 h-5" />
+          </button>
         </div>
       </div>
     </div>

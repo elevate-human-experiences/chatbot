@@ -194,10 +194,10 @@ export function Home() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <Card className="w-[400px]">
+        <Card className="w-[400px] border-neutral-50 bg-gray-50">
           <CardContent className="p-6">
             <div className="text-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-600 mx-auto mb-4"></div>
               <p className="text-gray-600">Initializing...</p>
             </div>
           </CardContent>
@@ -208,15 +208,15 @@ export function Home() {
 
   if (showCreateUser) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gray-50">
-        <Card className="w-[400px]">
+      <div className="flex items-center justify-center h-screen bg-background">
+        <Card className="w-[400px] border-border bg-background">
           <CardHeader>
             <CardTitle>Welcome to ChatBot</CardTitle>
-            <p className="text-sm text-gray-600">Let's get you set up with an account</p>
+            <p className="text-sm text-muted-foreground">Let's get you set up with an account</p>
           </CardHeader>
           <CardContent className="space-y-4">
             {error && (
-              <div className="p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded">
+              <div className="p-3 text-sm text-destructive bg-destructive/10 border border-destructive rounded">
                 {error}
               </div>
             )}
@@ -259,19 +259,19 @@ export function Home() {
   }
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-50">
-      <Card className="w-[500px]">
+    <div className="flex items-center justify-center h-screen bg-background">
+      <Card className="w-[500px] border-border bg-background">
         <CardHeader>
           <CardTitle>Welcome back, {user?.name}!</CardTitle>
-          <p className="text-sm text-gray-600">We're setting up your workspace...</p>
+          <p className="text-sm text-muted-foreground">We're setting up your workspace...</p>
         </CardHeader>
         <CardContent className="space-y-4">
           {error && (
-            <div className="p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded">
+            <div className="p-3 text-sm text-destructive bg-destructive/10 border border-destructive rounded">
               {error}
             </div>
           )}
-
+          hi
           <div className="space-y-2">
             <p>
               <strong>Projects:</strong> {projects.length}
@@ -283,11 +283,10 @@ export function Home() {
               <strong>Conversations:</strong> {conversations.length}
             </p>
           </div>
-
           <div className="flex gap-2">
             <Button
               onClick={() => user && loadUserData(user.id)}
-              className="flex-1"
+              className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground"
               disabled={!user}
             >
               Continue to Chat

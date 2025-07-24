@@ -1,14 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
-import { MessageSquare, User, ChevronRight, ChevronDown } from "lucide-react";
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-}
+import { ChevronRight, ChevronDown } from "lucide-react";
+import "@/assets/truncate-gradient-text.css";
 
 interface AgentProfile {
   id: string;
@@ -43,7 +37,6 @@ export function Sidebar({
   projectId,
   refreshKey,
 }: SidebarProps) {
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [agentProfiles, setAgentProfiles] = useState<AgentProfile[]>([]);
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [expandedProfiles, setExpandedProfiles] = useState<Set<string>>(new Set());
@@ -93,13 +86,6 @@ export function Sidebar({
       if (!userId) {
         console.error("No user ID found in localStorage");
         return;
-      }
-
-      // Load user info
-      const userResponse = await fetch(`${apiBaseUrl}/users/${userId}`);
-      if (userResponse.ok) {
-        const userData = await userResponse.json();
-        setCurrentUser(userData);
       }
 
       // Load agent profiles - use project-scoped API
@@ -198,35 +184,16 @@ export function Sidebar({
 
   if (loading) {
     return (
-      <div className="w-80 bg-gray-900 text-white border-r border-gray-700 p-4">
+      <div className="w-80 text-white border-r border-gray-700 p-4">
         <div className="text-center text-gray-400">Loading...</div>
       </div>
     );
   }
 
   return (
-    <div className="w-80 bg-gray-900 text-white border-r border-gray-700 flex flex-col h-full">
-      {/* Current User Section */}
-      <div className="p-4 border-b border-gray-700">
-        <div className="flex items-center space-x-3 p-3 rounded-lg bg-gray-800">
-          <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
-            <User className="w-4 h-4 text-white" />
-          </div>
-          <div className="min-w-0 flex-1">
-            {currentUser ? (
-              <>
-                <div className="font-medium text-sm text-white truncate">{currentUser.name}</div>
-                <div className="text-xs text-gray-400 truncate">{currentUser.email}</div>
-              </>
-            ) : (
-              <div className="text-xs text-gray-400">No user logged in</div>
-            )}
-          </div>
-        </div>
-      </div>
-
+    <div className="text-white border-r border-gray-900 flex flex-col h-full min-h-0 overflow-hidden">
       {/* Agent Profiles and Conversations */}
-      <ScrollArea className="flex-1 p-4">
+      <div className="flex-1 min-h-0 overflow-x-hidden">
         <div className="space-y-2">
           {agentProfiles.length === 0 ? (
             <div className="text-center text-gray-400 text-sm py-8">No agent profiles found</div>
@@ -238,10 +205,10 @@ export function Sidebar({
               return (
                 <div key={profile.id} className="space-y-1">
                   {/* Agent Profile Header */}
-                  <div className="flex items-center group">
+                  <div className="flex items-start group flex-col">
                     <Button
                       variant="ghost"
-                      className="flex-1 justify-start text-left font-medium text-sm p-3 h-auto text-white hover:bg-gray-800 rounded-lg"
+                      className="w-full flex-1 justify-start text-left font-medium text-sm h-auto text-white hover:bg-gray-200 rounded-none"
                       onClick={() => {
                         toggleProfileExpansion(profile.id);
                         // Auto-start new conversation when clicking on agent profile
@@ -255,7 +222,7 @@ export function Sidebar({
                           <ChevronRight className="w-4 h-4 text-gray-400" />
                         )}
                         <div className="min-w-0 flex-1">
-                          <div className="truncate text-white">{profile.name}</div>
+                          <div className="truncate text-gray-800">{profile.name}</div>
                           {profile.description && (
                             <div className="text-xs text-gray-400 truncate">
                               {profile.description}
@@ -268,26 +235,35 @@ export function Sidebar({
 
                   {/* Conversations for this profile */}
                   {isExpanded && (
-                    <div className="ml-6 space-y-1">
+                    <div className="ml-0 space-y-1">
                       {profileConversations.length === 0 ? (
-                        <div className="text-xs text-gray-500 py-2 px-3">No conversations yet</div>
+                        <div className="text-xs text-gray-500 py-2">No conversations yet</div>
                       ) : (
                         profileConversations.map((conversation) => (
                           <Button
                             key={conversation.id}
                             variant="ghost"
                             className={cn(
-                              "w-full justify-start text-left text-sm p-3 h-auto rounded-lg group",
+                              "w-[279px] justify-start text-left text-sm h-auto group",
                               selectedConversationId === conversation.id
-                                ? "bg-gray-800 text-white"
-                                : "text-gray-300 hover:bg-gray-800 hover:text-white"
+                                ? "bg-gray-200 text-gray-700 rounded-none"
+                                : "text-gray-700 hover:bg-gray-200 rounded-none"
                             )}
                             onClick={() => onConversationSelect(conversation.id)}
                           >
-                            <div className="flex items-center space-x-2 min-w-0 flex-1">
-                              <MessageSquare className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                            <div className="flex items-center space-x-1 min-w-0 flex-1">
+                              {/* <MessageSquare className="w-4 h-4 text-gray-400 flex-shrink-0" /> */}
                               <div className="min-w-0 flex-1">
-                                <div className="truncate">{getConversationTitle(conversation)}</div>
+                                <div
+                                  className="truncate truncate-gradient-text"
+                                  style={{
+                                    WebkitBackgroundClip: "text",
+                                    WebkitTextFillColor: "transparent",
+                                    backgroundClip: "text",
+                                  }}
+                                >
+                                  {getConversationTitle(conversation)}
+                                </div>
                                 <div className="text-xs text-gray-500">
                                   {new Date(conversation.started_at).toLocaleDateString()}
                                 </div>
@@ -303,7 +279,7 @@ export function Sidebar({
             })
           )}
         </div>
-      </ScrollArea>
+      </div>
     </div>
   );
 }
