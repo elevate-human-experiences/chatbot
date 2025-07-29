@@ -482,7 +482,7 @@ export function ChatArea({
     <div className="flex-1 flex flex-col bg-background h-full overflow-y-hidden">
       {/* Header */}
       {agentProfile && (
-        <div className="p-4 bg-background flex-shrink-0 fixed ml-4">
+        <div className="p-4 bg-background flex-shrink-0 fixed ml-4 h-full">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
@@ -612,7 +612,10 @@ export function ChatArea({
           zIndex: 20,
         }}
       >
-        <div className="max-w-3xl mx-auto p-4 bg-background border border-border rounded-2xl mb-5 ">
+        <div
+          className="max-w-3xl mx-auto p-4 bg-background border border-border rounded-2xl mb-0"
+          style={{ transform: "translateY(-10px)" }}
+        >
           <div className="flex items-end space-x-3">
             <div className="flex-1 relative">
               <Textarea
