@@ -112,57 +112,7 @@ export function Layout() {
           </div>
         </ChatLogicContext.Provider>
       ) : (
-        // Layout base sin projectId
-        <div className="flex h-screen">
-          <div
-            className="flex flex-col bg-background border-r border-border transition-all duration-200"
-            style={{ width: sidebarWidth, minWidth: collapsedSidebarWidth }}
-          >
-            {/* Fixed top menu item: Elevate */}
-            <div
-              className={cn(
-                "sticky top-0 z-10 bg-background w-full px-4 pt-6 pb-2 flex items-center",
-                sidebarVisible ? "justify-start" : "justify-center"
-              )}
-            >
-              {sidebarVisible && (
-                <span className="font-semibold text-lg text-primary ml-2">Elevate</span>
-              )}
-            </div>
-
-            {/* Empty sidebar content */}
-            <div className="flex-1 min-h-0 flex items-center justify-center text-gray-400">
-              {sidebarVisible ? "Select a project to view conversations" : ""}
-            </div>
-
-            {/* UserInfo fixed at the bottom of sidebar */}
-            <div className="absolute bottom-0 left-0 w-full border-t border-border bg-background">
-              <UserInfo user={currentUser} hideDetails={!sidebarVisible} />
-            </div>
-          </div>
-
-          <div className="flex-1 bg-background relative">
-            <button
-              onClick={() => setSidebarVisible((v) => !v)}
-              className="fixed top-4 z-30 bg-background border border-border rounded-full shadow p-1 hover:bg-accent transition"
-              style={{
-                left: sidebarWidth,
-                transform: "translateX(-50%)",
-                transition: "left 0.2s",
-              }}
-              aria-label={sidebarVisible ? "Hide sidebar" : "Show sidebar"}
-            >
-              {sidebarVisible ? (
-                <ChevronLeft className="w-4 h-4" />
-              ) : (
-                <ChevronRight className="w-4 h-4" />
-              )}
-            </button>
-            <div className="h-full w-full">
-              <Outlet />
-            </div>
-          </div>
-        </div>
+        <Outlet />
       )}
     </>
   );
