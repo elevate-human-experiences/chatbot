@@ -602,7 +602,16 @@ export function ChatArea({
       </div>
 
       {/* Input */}
-      <div className="border-t border-border bg-background flex-shrink-0">
+      <div
+        className="border-t border-border bg-background flex-shrink-0"
+        style={{
+          position: "sticky",
+          bottom: 0,
+          left: 0,
+          width: "100%",
+          zIndex: 20,
+        }}
+      >
         <div className="max-w-3xl mx-auto p-4">
           <div className="flex items-end space-x-3">
             <div className="flex-1 relative">
