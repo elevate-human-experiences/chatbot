@@ -499,95 +499,96 @@ export function ChatArea({
         </div>
       )}
 
-      {messages.length === 0 && !currentStreamingMessage && agentProfile && (
-        <div className="text-center bg-amber-400">
-          <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
-            <Bot className="w-8 h-8 text-muted-foreground" />
-          </div>
-          <h3 className="text-lg font-semibold text-foreground mb-2">
-            Chat with {agentProfile.name}
-          </h3>
-          <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-            {agentProfile.description || "Start a conversation by typing a message below."}
-          </p>
-          <div className="">
-            <button
-              onClick={() => setInput("Hello! How can you help me today?")}
-              className="p-3 text-left border border-border rounded-lg hover:bg-accent transition-colors"
-            >
-              <div className="font-medium text-sm text-foreground">Say hello</div>
-              <div className="text-xs text-muted-foreground">Start with a greeting</div>
-            </button>
-            <button
-              onClick={() => setInput("What can you help me with?")}
-              className="p-3 text-left border border-border rounded-lg hover:bg-accent transition-colors"
-            >
-              <div className="font-medium text-sm text-foreground">Get help</div>
-              <div className="text-xs text-muted-foreground">Learn about capabilities</div>
-            </button>
+      {messages.length === 0 && !currentStreamingMessage && agentProfile ? (
+        <div className="h-full flex items-center justify-center text-center">
+          <div>
+            <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+              <Bot className="w-8 h-8 text-muted-foreground" />
+            </div>
+            <h3 className="text-lg font-semibold text-foreground mb-2">
+              Chat with {agentProfile.name}
+            </h3>
+            <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+              {agentProfile.description || "Start a conversation by typing a message below."}
+            </p>
+            <div className="space-x-10">
+              <button
+                onClick={() => setInput("Hello! How can you help me today?")}
+                className="p-3 text-left border border-border rounded-lg hover:bg-accent transition-colors"
+              >
+                <div className="font-medium text-sm text-foreground">Say hello</div>
+                <div className="text-xs text-muted-foreground">Start with a greeting</div>
+              </button>
+              <button
+                onClick={() => setInput("What can you help me with?")}
+                className="p-3 text-left border border-border rounded-lg hover:bg-accent transition-colors"
+              >
+                <div className="font-medium text-sm text-foreground">Get help</div>
+                <div className="text-xs text-muted-foreground">Learn about capabilities</div>
+              </button>
+            </div>
           </div>
         </div>
-      )}
-
-      {/* Messages */}
-      <ScrollArea className="h-full bg-red-500 px-4" ref={scrollAreaRef}>
-        <div className="max-w-3xl mx-auto py-6 mb-40 mt-20">
-          <div className="space-y-6">
-            {messages.map((message) => (
-              <div key={message.id} className="flex space-x-3">
-                <div className="flex-shrink-0">
-                  {message.role === "user" ? (
-                    <div className="w-8 h-8 bg-secondary rounded-full flex items-center justify-center">
-                      <UserIcon className="w-5 h-5 text-secondary-foreground" />
-                    </div>
-                  ) : (
-                    <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-                      <Bot className="w-5 h-5 text-primary-foreground" />
-                    </div>
-                  )}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="bg-muted rounded-lg p-4">
-                    {message.role === "assistant" && renderThinking(message, false)}
-
-                    <div className="prose prose-sm max-w-none">
-                      <div className="whitespace-pre-wrap text-foreground">{message.content}</div>
-                    </div>
+      ) : (
+        <ScrollArea className="h-full px-4" ref={scrollAreaRef}>
+          <div className="max-w-3xl mx-auto py-6 mb-40 mt-20">
+            <div className="space-y-6">
+              {messages.map((message) => (
+                <div key={message.id} className="flex space-x-3">
+                  <div className="flex-shrink-0">
+                    {message.role === "user" ? (
+                      <div className="w-8 h-8 bg-secondary rounded-full flex items-center justify-center">
+                        <UserIcon className="w-5 h-5 text-secondary-foreground" />
+                      </div>
+                    ) : (
+                      <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                        <Bot className="w-5 h-5 text-primary-foreground" />
+                      </div>
+                    )}
                   </div>
-                </div>
-              </div>
-            ))}
+                  <div className="flex-1 min-w-0">
+                    <div className="bg-muted rounded-lg p-4">
+                      {message.role === "assistant" && renderThinking(message, false)}
 
-            {currentStreamingMessage && (
-              <div className="flex space-x-3">
-                <div className="flex-shrink-0">
-                  <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-                    <Bot className="w-5 h-5 text-primary-foreground" />
-                  </div>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="bg-muted rounded-lg p-4">
-                    {renderThinking(currentStreamingMessage, true)}
-
-                    <div className="prose prose-sm max-w-none">
-                      <div className="whitespace-pre-wrap text-foreground">
-                        {currentStreamingMessage.content}
-                        {currentStreamingMessage.content && (
-                          <span className="inline-block w-2 h-5 bg-muted-foreground ml-1 animate-pulse"></span>
-                        )}
+                      <div className="prose prose-sm max-w-none">
+                        <div className="whitespace-pre-wrap text-foreground">{message.content}</div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            )}
+              ))}
+
+              {currentStreamingMessage && (
+                <div className="flex space-x-3">
+                  <div className="flex-shrink-0">
+                    <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                      <Bot className="w-5 h-5 text-primary-foreground" />
+                    </div>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="bg-muted rounded-lg p-4">
+                      {renderThinking(currentStreamingMessage, true)}
+
+                      <div className="prose prose-sm max-w-none">
+                        <div className="whitespace-pre-wrap text-foreground">
+                          {currentStreamingMessage.content}
+                          {currentStreamingMessage.content && (
+                            <span className="inline-block w-2 h-5 bg-muted-foreground ml-1 animate-pulse"></span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-      </ScrollArea>
+        </ScrollArea>
+      )}
 
       {/* Scroll to top button */}
       <div
-        className={`z-50 fixed bottom-14 right-14 transition-opacity duration-300 ${
+        className={`z-50 fixed bottom-25 right-20 transition-opacity duration-300 ${
           showScrollTopButton ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
       >
