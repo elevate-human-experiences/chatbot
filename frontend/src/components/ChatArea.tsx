@@ -482,7 +482,7 @@ export function ChatArea({
     <div className="flex-1 flex flex-col bg-background h-full overflow-y-hidden">
       {/* Header */}
       {agentProfile && (
-        <div className="p-4 bg-background flex-shrink-0 fixed ml-4 h-full">
+        <div className="p-4 bg-background w-full fixed ml-4 border-accent border-b-2 z-20">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
@@ -499,39 +499,39 @@ export function ChatArea({
         </div>
       )}
 
-      {/* Messages */}
-      <ScrollArea className="h-full px-4" ref={scrollAreaRef}>
-        <div className="max-w-3xl mx-auto py-6 mb-40">
-          {messages.length === 0 && !currentStreamingMessage && agentProfile && (
-            <div className="text-center py-12">
-              <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
-                <Bot className="w-8 h-8 text-muted-foreground" />
-              </div>
-              <h3 className="text-lg font-semibold text-foreground mb-2">
-                Chat with {agentProfile.name}
-              </h3>
-              <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-                {agentProfile.description || "Start a conversation by typing a message below."}
-              </p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-md mx-auto">
-                <button
-                  onClick={() => setInput("Hello! How can you help me today?")}
-                  className="p-3 text-left border border-border rounded-lg hover:bg-accent transition-colors"
-                >
-                  <div className="font-medium text-sm text-foreground">Say hello</div>
-                  <div className="text-xs text-muted-foreground">Start with a greeting</div>
-                </button>
-                <button
-                  onClick={() => setInput("What can you help me with?")}
-                  className="p-3 text-left border border-border rounded-lg hover:bg-accent transition-colors"
-                >
-                  <div className="font-medium text-sm text-foreground">Get help</div>
-                  <div className="text-xs text-muted-foreground">Learn about capabilities</div>
-                </button>
-              </div>
-            </div>
-          )}
+      {messages.length === 0 && !currentStreamingMessage && agentProfile && (
+        <div className="text-center bg-amber-400">
+          <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+            <Bot className="w-8 h-8 text-muted-foreground" />
+          </div>
+          <h3 className="text-lg font-semibold text-foreground mb-2">
+            Chat with {agentProfile.name}
+          </h3>
+          <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+            {agentProfile.description || "Start a conversation by typing a message below."}
+          </p>
+          <div className="">
+            <button
+              onClick={() => setInput("Hello! How can you help me today?")}
+              className="p-3 text-left border border-border rounded-lg hover:bg-accent transition-colors"
+            >
+              <div className="font-medium text-sm text-foreground">Say hello</div>
+              <div className="text-xs text-muted-foreground">Start with a greeting</div>
+            </button>
+            <button
+              onClick={() => setInput("What can you help me with?")}
+              className="p-3 text-left border border-border rounded-lg hover:bg-accent transition-colors"
+            >
+              <div className="font-medium text-sm text-foreground">Get help</div>
+              <div className="text-xs text-muted-foreground">Learn about capabilities</div>
+            </button>
+          </div>
+        </div>
+      )}
 
+      {/* Messages */}
+      <ScrollArea className="h-full bg-red-500 px-4" ref={scrollAreaRef}>
+        <div className="max-w-3xl mx-auto py-6 mb-40 mt-20">
           <div className="space-y-6">
             {messages.map((message) => (
               <div key={message.id} className="flex space-x-3">
