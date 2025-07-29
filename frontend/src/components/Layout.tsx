@@ -35,7 +35,7 @@ export function Layout() {
       }
     };
     fetchUser();
-  }, [apiBaseUrl]);
+  }, [apiBaseUrl, projectId]);
 
   // Siempre llama el hook, pero solo usa el resultado si hay projectId
   const chatLogic = useChatLogic(projectId, apiBaseUrl, navigate);
