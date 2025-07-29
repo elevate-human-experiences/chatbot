@@ -479,7 +479,7 @@ export function ChatArea({
   }
 
   return (
-    <div className="flex-1 flex flex-col bg-background h-full">
+    <div className="flex-1 flex flex-col bg-background h-full overflow-y-hidden">
       {/* Header */}
       {agentProfile && (
         <div className="p-4 bg-background flex-shrink-0 fixed ml-4">
@@ -501,7 +501,7 @@ export function ChatArea({
 
       {/* Messages */}
       <ScrollArea className="h-full px-4" ref={scrollAreaRef}>
-        <div className="max-w-3xl mx-auto py-6">
+        <div className="max-w-3xl mx-auto py-6 mb-40">
           {messages.length === 0 && !currentStreamingMessage && agentProfile && (
             <div className="text-center py-12">
               <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
@@ -587,7 +587,7 @@ export function ChatArea({
 
       {/* Scroll to top button */}
       <div
-        className={`fixed bottom-24 right-6 transition-opacity duration-300 ${
+        className={`z-50 fixed bottom-14 right-14 transition-opacity duration-300 ${
           showScrollTopButton ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
       >
@@ -603,7 +603,7 @@ export function ChatArea({
 
       {/* Input */}
       <div
-        className="bg-transparent flex-shrink-0"
+        className="bg-background flex-shrink-0"
         style={{
           position: "sticky",
           bottom: 0,
@@ -612,7 +612,7 @@ export function ChatArea({
           zIndex: 20,
         }}
       >
-        <div className="max-w-3xl mx-auto p-4 bg-background">
+        <div className="max-w-3xl mx-auto p-4 bg-background border border-border rounded-2xl mb-5 ">
           <div className="flex items-end space-x-3">
             <div className="flex-1 relative">
               <Textarea
