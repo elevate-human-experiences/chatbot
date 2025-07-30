@@ -4,7 +4,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  background: linear-gradient(to right, #000 90%, transparent 100%);
+  background: linear-gradient(to right, #000 30%, transparent 60%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -12,5 +12,5 @@
 
 /* Para fondos oscuros */
 .truncate-gradient-text-dark {
-  background: linear-gradient(to right, #1a202c 80%, transparent 100%);
+  background: linear-gradient(to right, #1a202c 0%, transparent 100%);
 }
