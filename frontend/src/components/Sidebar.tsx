@@ -54,6 +54,8 @@ export function Sidebar({
     []
   );
 
+  console.log(conversations);
+
   const loadExpandedState = useCallback((): Set<string> => {
     if (!projectId) return new Set<string>();
 
@@ -338,8 +340,9 @@ export function Sidebar({
                                   )}
                                 ></div>
                                 <div className="min-w-0 flex-1">
-                                  <div className="truncate leading-tight text-gray-600 group-hover:text-gray-900">
-                                    {getConversationTitle(conversation)}
+                                  <div className="truncate truncate-gradient-text leading-tight text-gray-600 group-hover:text-gray-900">
+                                    {/* {getConversationTitle(conversation)} */}
+                                    {conversation.messages[0].content}
                                   </div>
                                   <div className="text-xs text-gray-500 mt-1">
                                     {new Date(conversation.started_at).toLocaleDateString()}
