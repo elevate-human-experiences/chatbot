@@ -10,6 +10,7 @@ import {
   ChevronDown,
   ChevronRight,
   ChevronUp,
+  MessageSquareMore,
 } from "lucide-react";
 
 interface Message {
@@ -449,7 +450,10 @@ export function ChatArea({
           className="flex items-center space-x-2 text-muted-foreground hover:text-foreground font-medium transition-colors"
         >
           {isExpanded ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
-          <span>💭 {isStreaming ? "Thinking..." : "Thought"}</span>
+          <span className="flex items-center space-x-1">
+            <MessageSquareMore className="w-4 h-4 text-primary mr-2" />
+            {isStreaming ? "Thinking..." : "Thought"}
+          </span>
         </button>
         {isExpanded && (
           <div className="mt-2 p-3 bg-accent rounded border-l-4 border-border">
