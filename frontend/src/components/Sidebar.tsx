@@ -1,8 +1,12 @@
 import { useState, useEffect, useCallback } from "react";
+
+function truncateText(text: string, maxLength: number = 28): string {
+  if (!text) return "";
+  return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
+}
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ChevronRight, ChevronDown } from "lucide-react";
-import "@/assets/truncate-gradient-text.css";
 
 interface AgentProfile {
   id: string;
@@ -340,9 +344,8 @@ export function Sidebar({
                                   )}
                                 ></div>
                                 <div className="min-w-0 flex-1">
-                                  <div className="truncate truncate-gradient-text leading-tight text-gray-600 group-hover:text-gray-900">
-                                    {/* {getConversationTitle(conversation)} */}
-                                    {conversation.messages[0].content}
+                                  <div className="leading-tight text-gray-600 group-hover:text-gray-900">
+                                    {truncateText(conversation.messages[0]?.content)}
                                   </div>
                                   <div className="text-xs text-gray-500 mt-1">
                                     {new Date(conversation.started_at).toLocaleDateString()}
